@@ -54,6 +54,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                         _darkThemeNotifier.value = newValue;
                         ThemeController.instance.changeTheme();
                       },
+                      controlAffinity: ListTileControlAffinity.leading,
                     );
                   },
                 ),
