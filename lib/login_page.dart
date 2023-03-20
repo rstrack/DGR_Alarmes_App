@@ -14,6 +14,10 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isLoginMode = true;
+
+  var textBotaoPrincipal = '';
+  var textAppBarBotao = '';
 
   String _errorMessage = '';
 
@@ -27,10 +31,17 @@ class _LoginPageState extends State<LoginPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      final result = await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      if (_isLoginMode) {
+        final result = await auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } else {
+        final result = await auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      }
 
       // if (result.user != null) {
       //   Navigator.of(context).pushReplacementNamed('/login_page');
@@ -45,9 +56,28 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    textBotaoPrincipal = (_isLoginMode) ? 'Login' : 'Registre-se';
+    textAppBarBotao = (_isLoginMode) ? 'Cadastre-se' : 'Login';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Entrar'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _isLoginMode = !_isLoginMode;
+              });
+            },
+            child: Text(
+              textAppBarBotao,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12.0,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -56,11 +86,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/logo.png',
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  color: Colors.indigo[600],
-                ),
                 Form(
                   key: _formKey,
                   child: Column(
