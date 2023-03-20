@@ -29,11 +29,11 @@ class MyApp extends StatelessWidget {
           title: 'Alarme Residencial',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primarySwatch: Colors.green,
-            brightness: ThemeController.instance.isDarkTheme
-                ? Brightness.dark
-                : Brightness.light,
-          ),
+              primarySwatch: Colors.indigo,
+              brightness: ThemeController.instance.isDarkTheme
+                  ? Brightness.dark
+                  : Brightness.light,
+              appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)),
           routes: {
             '/': (context) => const MainPage(),
             '/login_page': (context) => const LoginPage(),

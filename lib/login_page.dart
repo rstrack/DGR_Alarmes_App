@@ -49,74 +49,79 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('Entrar'),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'E-mail',
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Informe um e-mail!';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16.0),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Senha',
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Informe a senha!';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () {
-                              if (_formKey.currentState!.validate()) {
-                                _login();
-                              }
-                            },
-                      child: _isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text('Entrar'),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Text(
-                      _errorMessage,
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    // Text((FirebaseAuth.instance.currentUser == null)
-                    //     ? "Não encontrado!"
-                    //     : FirebaseAuth.instance.currentUser!.email!)
-                  ],
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  color: Colors.indigo[600],
                 ),
-              ),
-            ],
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'E-mail',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Informe um e-mail!';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Senha',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Informe a senha!';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                if (_formKey.currentState!.validate()) {
+                                  _login();
+                                }
+                              },
+                        child: _isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text('Entrar'),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        _errorMessage,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      // Text((FirebaseAuth.instance.currentUser == null)
+                      //     ? "Não encontrado!"
+                      //     : FirebaseAuth.instance.currentUser!.email!)
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
