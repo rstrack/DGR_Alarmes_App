@@ -1,7 +1,8 @@
-class User {
-  String name;
+class Usuario {
+  String id;
+  String? name;
   String email;
-  String password;
+  String? password;
 
-  User({required this.name, required this.email, required this.password});
+  Usuario({required this.id, this.name = '', required this.email, this.password});
 }

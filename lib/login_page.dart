@@ -14,6 +14,10 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isLoginMode = true;
+
+  var textBotaoPrincipal = '';
+  var textAppBarBotao = '';
 
   String _errorMessage = '';
 
@@ -27,10 +31,17 @@ class _LoginPageState extends State<LoginPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      final result = await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      if (_isLoginMode) {
+        final result = await auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } else {
+        final result = await auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      }
 
       // if (result.user != null) {
       //   Navigator.of(context).pushReplacementNamed('/login_page');
@@ -45,9 +56,28 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    textBotaoPrincipal = (_isLoginMode) ? 'Login' : 'Registre-se';
+    textAppBarBotao = (_isLoginMode) ? 'Cadastre-se' : 'Login';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Entrar'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _isLoginMode = !_isLoginMode;
+              });
+            },
+            child: Text(
+              textAppBarBotao,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12.0,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
@@ -90,17 +120,20 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                     const SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () {
-                              if (_formKey.currentState!.validate()) {
-                                _login();
-                              }
-                            },
-                      child: _isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text('Entrar'),
+                    SizedBox(
+                      height: 32,
+                      child: ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                if (_formKey.currentState!.validate()) {
+                                  _login();
+                                }
+                              },
+                        child: _isLoading
+                            ? const CircularProgressIndicator()
+                            : Text(textBotaoPrincipal),
+                      ),
                     ),
                     const SizedBox(height: 16.0),
                     Text(
@@ -110,9 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                         fontSize: 16.0,
                       ),
                     ),
-                    // Text((FirebaseAuth.instance.currentUser == null)
-                    //     ? "Não encontrado!"
-                    //     : FirebaseAuth.instance.currentUser!.email!)
                   ],
                 ),
               ),

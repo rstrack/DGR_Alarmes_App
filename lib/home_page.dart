@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:testes/menu_drawer.dart';
+import 'package:testes/model/User.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -16,13 +17,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    var usuarioLogado = Usuario(id: user.uid, email: user.email.toString());
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       drawer: const MenuDrawer(),
       body:
-          Center(child: Text('Bem vindo ${user.email ?? 'Não encontrado!'}!')),
+          Center(child: Text('Bem vindo ${usuarioLogado.email}!')),
     );
   }
 }
