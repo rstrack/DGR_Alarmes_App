@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'theme_controller.dart';
@@ -10,6 +11,8 @@ class MenuDrawer extends StatefulWidget {
 }
 
 class _MenuDrawerState extends State<MenuDrawer> {
+  final auth = FirebaseAuth.instance;
+
   late final ValueNotifier<bool> _darkThemeNotifier;
 
   @override
@@ -25,10 +28,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
         children: [
           Expanded(
             child: Column(
-              children: const [
+              children: [
                 UserAccountsDrawerHeader(
                   accountName: Text("Nome"),
-                  accountEmail: Text("Email@email.com"),
+                  accountEmail:
+                      Text(auth.currentUser!.email ?? 'Não encontrado!'),
                   currentAccountPicture: CircleAvatar(
                     child: Icon(Icons.person),
                   ),
@@ -44,6 +48,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 const ListTile(
                     leading: Icon(Icons.settings),
                     title: Text('Configurações')),
+                ListTile(
+                    leading: Icon(Icons.logout_outlined),
+                    title: Text('Sair'),
+                    onTap: () => auth.signOut()),
                 ValueListenableBuilder<bool>(
                   valueListenable: _darkThemeNotifier,
                   builder: (BuildContext context, bool value, Widget? child) {
