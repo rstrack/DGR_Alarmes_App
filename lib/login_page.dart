@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -46,65 +47,76 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Entrar'),
       ),
-      body: SingleChildScrollView(
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    return null;
-                  },
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'E-mail',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Informe um e-mail!';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Senha',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Informe a senha!';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              if (_formKey.currentState!.validate()) {
+                                _login();
+                              }
+                            },
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Entrar'),
+                    ),
+                    const SizedBox(height: 16.0),
+                    Text(
+                      _errorMessage,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    // Text((FirebaseAuth.instance.currentUser == null)
+                    //     ? "Não encontrado!"
+                    //     : FirebaseAuth.instance.currentUser!.email!)
+                  ],
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                ElevatedButton(
-                  child: _isLoading
-                      ? CircularProgressIndicator()
-                      : Text('Login'),
-                  onPressed: _isLoading ? null : () {
-                    if (_formKey.currentState!.validate()) {
-                      _login();
-                    }
-                  },
-                ),
-                SizedBox(height: 16.0),
-                Text(
-                  _errorMessage,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 16.0,
-                  ),
-                ),
-                Text((FirebaseAuth.instance.currentUser == null) ? "Não encontrado!" : FirebaseAuth.instance.currentUser!.email!)
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

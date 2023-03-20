@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           ),
           routes: {
             '/': (context) => const MainPage(),
-            '/login_page': (context) => LoginPage(),
+            '/login_page': (context) => const LoginPage(),
             '/home_page': (context) => const HomePage(title: 'DGR Alarme')
           },
         );
@@ -50,20 +50,20 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        drawer: Drawer(),
+        drawer: const Drawer(),
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            print(">> ${snapshot.hasData} | ${snapshot.toString()}");
+            //print(">> ${snapshot.hasData} | ${snapshot.toString()}");
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             } else {
               if (snapshot.hasData) {
                 return const HomePage(title: 'DGR Alarmes');
               } else {
-                return LoginPage();
+                return const LoginPage();
               }
             }
           },

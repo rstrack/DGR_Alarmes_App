@@ -30,10 +30,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
             child: Column(
               children: [
                 UserAccountsDrawerHeader(
-                  accountName: Text("Nome"),
-                  accountEmail:
-                      Text(auth.currentUser!.email ?? 'Não encontrado!'),
-                  currentAccountPicture: CircleAvatar(
+                  accountName: const Text("Nome"),
+                  accountEmail: Text('${auth.currentUser!.email}'),
+                  currentAccountPicture: const CircleAvatar(
                     child: Icon(Icons.person),
                   ),
                 ),
@@ -49,8 +48,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     leading: Icon(Icons.settings),
                     title: Text('Configurações')),
                 ListTile(
-                    leading: Icon(Icons.logout_outlined),
-                    title: Text('Sair'),
+                    leading: const Icon(Icons.logout_outlined),
+                    title: const Text('Sair'),
                     onTap: () => auth.signOut()),
                 ValueListenableBuilder<bool>(
                   valueListenable: _darkThemeNotifier,

@@ -12,7 +12,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final user = FirebaseAuth.instance.currentUser!;
 
   @override
@@ -22,9 +21,8 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
       ),
       drawer: const MenuDrawer(),
-      body: Container(
-        child: Center(child: Text(user.email ?? 'Não encontrado!')),
-      ),
+      body:
+          Center(child: Text('Bem vindo ${user.email ?? 'Não encontrado!'}!')),
     );
   }
 }
