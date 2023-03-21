@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "testes" "\0"
+            VALUE "FileDescription", "DGR_alarmes" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "testes" "\0"
+            VALUE "InternalName", "DGR_alarmes" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "testes.exe" "\0"
-            VALUE "ProductName", "testes" "\0"
+            VALUE "OriginalFilename", "DGR_alarmes.exe" "\0"
+            VALUE "ProductName", "DGR_alarmes" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

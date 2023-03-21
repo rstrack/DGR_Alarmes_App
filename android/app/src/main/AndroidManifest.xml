@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.testes">
+    package="com.example.DGR_alarmes">
    <application
-        android:label="testes"
+        android:label="DGR_alarmes"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

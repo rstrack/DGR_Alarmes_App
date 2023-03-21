@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:testes/menu_drawer.dart';
-import 'package:testes/model/User.dart';
+import 'package:DGR_alarmes/widgets/menu_drawer.dart';
+import 'package:DGR_alarmes/models/User.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -17,7 +17,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     var usuarioLogado = Usuario(id: user.uid, email: user.email.toString());
 
     return Scaffold(
@@ -25,8 +24,7 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
       ),
       drawer: const MenuDrawer(),
-      body:
-          Center(child: Text('Bem vindo ${usuarioLogado.email}!')),
+      body: Center(child: Text('Bem vindo ${usuarioLogado.email}!')),
     );
   }
 }

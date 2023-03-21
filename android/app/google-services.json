@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:761421169323:android:3349b9bd024f79b6442dee",
         "android_client_info": {
-          "package_name": "com.example.testes"
+          "package_name": "com.example.DGR_alarmes"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.testes"
+                "bundle_id": "com.example.DGR_alarmes"
               }
             }
           ]
@@ -70,7 +70,7 @@
               "client_id": "761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.testes"
+                "bundle_id": "com.example.DGR_alarmes"
               }
             }
           ]

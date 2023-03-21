@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
-  bool _isLoginMode = true;
-
-  var textBotaoPrincipal = '';
-  var textAppBarBotao = '';
 
   String _errorMessage = '';
 
@@ -28,20 +25,14 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final auth = FirebaseAuth.instance;
+      final name = _nameController.text.trim();
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      if (_isLoginMode) {
-        final result = await auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-      } else {
-        final result = await auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-      }
+      final result = await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
       // if (result.user != null) {
       //   Navigator.of(context).pushReplacementNamed('/login_page');
@@ -56,22 +47,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    textBotaoPrincipal = (_isLoginMode) ? 'Login' : 'Registre-se';
-    textAppBarBotao = (_isLoginMode) ? 'Cadastre-se' : 'Login';
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Entrar'),
+        title: const Text('Cadastro'),
         actions: [
           TextButton(
             onPressed: () {
-              setState(() {
-                _isLoginMode = !_isLoginMode;
-              });
+              Navigator.of(context).pushReplacementNamed('/login_page');
             },
-            child: Text(
-              textAppBarBotao,
-              style: const TextStyle(
+            child: const Text(
+              'Entrar',
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 12.0,
               ),
@@ -86,11 +72,29 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Image.asset(
+                //   'assets/logo.png',
+                //   width: MediaQuery.of(context).size.width * 0.6,
+                //   color: Theme.of(context).primaryColor,
+                // ),
                 Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
+                      TextFormField(
+                        controller: _nameController,
+                        keyboardType: TextInputType.text,
+                        decoration: const InputDecoration(
+                          labelText: 'Nome completo',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Informe um nome!';
+                          }
+                          return null;
+                        },
+                      ),
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -129,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                         child: _isLoading
                             ? const CircularProgressIndicator()
-                            : const Text('Entrar'),
+                            : const Text('Cadastrar'),
                       ),
                       const SizedBox(height: 16.0),
                       Text(

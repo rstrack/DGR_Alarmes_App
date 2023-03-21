@@ -66,8 +66,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '761421169323',
     projectId: 'dgr-alarmes',
     storageBucket: 'dgr-alarmes.appspot.com',
-    iosClientId: '761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com',
-    iosBundleId: 'com.example.testes',
+    iosClientId:
+        '761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com',
+    iosBundleId: 'com.example.DGR_alarmes',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -76,7 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '761421169323',
     projectId: 'dgr-alarmes',
     storageBucket: 'dgr-alarmes.appspot.com',
-    iosClientId: '761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com',
-    iosBundleId: 'com.example.testes',
+    iosClientId:
+        '761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com',
+    iosBundleId: 'com.example.DGR_alarmes',
   );
 }

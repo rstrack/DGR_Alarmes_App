@@ -1,6 +1,6 @@
 {
-    "name": "testes",
-    "short_name": "testes",
+    "name": "DGR_alarmes",
+    "short_name": "DGR_alarmes",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
