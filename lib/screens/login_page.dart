@@ -45,13 +45,16 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{'createdUser': false}) as Map;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Entrar'),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/register_page');
+              Navigator.of(context).pushNamed('/register_page');
             },
             child: const Text(
               'Cadastre-se',
@@ -75,6 +78,9 @@ class _LoginPageState extends State<LoginPage> {
                   width: MediaQuery.of(context).size.width * 0.6,
                   color: Theme.of(context).primaryColor,
                 ),
+                if (arguments['createdUser'])
+                  const Text(
+                      'Usuário criado com sucesso! Use suas credenciais para entrar'),
                 Form(
                   key: _formKey,
                   child: Column(

@@ -34,9 +34,10 @@ class _RegisterPageState extends State<RegisterPage> {
         password: password,
       );
 
-      // if (result.user != null) {
-      //   Navigator.of(context).pushReplacementNamed('/login_page');
-      // }
+      if (mounted && result.user != null) {
+        Navigator.of(context).pushReplacementNamed('/login_page',
+            arguments: {'createdUser': true});
+      }
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
