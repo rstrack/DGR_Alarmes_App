@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
             '/': (context) => const MainPage(),
             '/login_page': (context) => const LoginPage(),
             '/register_page': (context) => const RegisterPage(),
-            '/home_page': (context) => const HomePage(title: 'DGR Alarme')
+            '/home_page': (context) => const HomePage()
           },
         );
       },
@@ -59,7 +59,7 @@ class MainPage extends StatelessWidget {
               );
             } else {
               if (snapshot.hasData) {
-                return const HomePage(title: 'DGR Alarmes');
+                return const HomePage();
               } else {
                 return const LoginPage();
               }

@@ -78,9 +78,6 @@ class _LoginPageState extends State<LoginPage> {
                   width: MediaQuery.of(context).size.width * 0.6,
                   color: Theme.of(context).primaryColor,
                 ),
-                if (arguments['createdUser'])
-                  const Text(
-                      'Usuário criado com sucesso! Use suas credenciais para entrar'),
                 Form(
                   key: _formKey,
                   child: Column(
