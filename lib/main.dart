@@ -1,11 +1,12 @@
-import 'package:DGR_alarmes/screens/register_page.dart';
-import 'package:DGR_alarmes/widgets/theme.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:DGR_alarmes/screens/login_page.dart';
-import 'package:DGR_alarmes/theme_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'services/firebase_options.dart';
+
+import 'package:DGR_alarmes/providers/theme_provider.dart';
+import 'package:DGR_alarmes/screens/login_page.dart';
+import 'package:DGR_alarmes/screens/register_page.dart';
+import 'package:DGR_alarmes/services/firebase_options.dart';
+import 'package:DGR_alarmes/widgets/theme.dart';
 
 import 'screens/home_page.dart';
 
@@ -25,12 +26,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: ThemeController.instance,
+      animation: ThemeProvider.instance,
       builder: (context, child) {
         return MaterialApp(
           title: 'Alarme Residencial',
           debugShowCheckedModeBanner: false,
-          theme: ThemeController.instance.isDarkTheme ? darkTheme : darkTheme,
+          theme: ThemeProvider.instance.isDarkTheme ? darkTheme : lightTheme,
           routes: {
             '/': (context) => const MainPage(),
             '/login_page': (context) => const LoginPage(),
