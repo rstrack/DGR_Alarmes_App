@@ -35,7 +35,8 @@ class _RegisterPageState extends State<RegisterPage> {
       );
 
       if (mounted && result.user != null) {
-        Navigator.of(context).pushReplacementNamed('/login_page',
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/login_page', (route) => false,
             arguments: {'createdUser': true});
       }
     } catch (e) {
@@ -51,20 +52,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cadastro'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/login_page');
-            },
-            child: const Text(
-              'Entrar',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12.0,
-              ),
-            ),
-          ),
-        ],
       ),
       body: Center(
         child: SingleChildScrollView(

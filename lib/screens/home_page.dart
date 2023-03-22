@@ -1,12 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:DGR_alarmes/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
-import 'package:DGR_alarmes/widgets/menu_drawer.dart';
-import 'package:DGR_alarmes/models/User.dart';
+
+import '../widgets/menu_drawer.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,14 +16,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var usuarioLogado = Usuario(id: user.uid, email: user.email.toString());
+    var loggedUser = User(id: user.uid, email: user.email.toString());
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('DGR Alarmes'),
       ),
       drawer: const MenuDrawer(),
-      body: Center(child: Text('Bem vindo ${usuarioLogado.email}!')),
+      body: Center(child: Text('Bem vindo ${loggedUser.email}!')),
     );
   }
 }

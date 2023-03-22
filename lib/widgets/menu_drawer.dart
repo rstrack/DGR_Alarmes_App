@@ -50,7 +50,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 ListTile(
                     leading: const Icon(Icons.logout_outlined),
                     title: const Text('Sair'),
-                    onTap: () => auth.signOut()),
+                    onTap: () {
+                      auth.signOut();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/login_page', (route) => false);
+                    }),
                 ValueListenableBuilder<bool>(
                   valueListenable: _darkThemeNotifier,
                   builder: (BuildContext context, bool value, Widget? child) {
