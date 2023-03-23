@@ -1,3 +1,4 @@
+import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
@@ -12,18 +13,36 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final user = FirebaseAuth.instance.currentUser!;
+  final userAuth = FirebaseAuth.instance.currentUser!;
 
   @override
   Widget build(BuildContext context) {
-    var loggedUser = User(id: user.uid, email: user.email.toString());
+    var loggedUser = user(id: userAuth.uid, email: userAuth.email.toString());
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('DGR Alarmes'),
       ),
       drawer: const MenuDrawer(),
-      body: Center(child: Text('Bem vindo ${loggedUser.email}!')),
+      body: Column(
+        children: [
+          Center(child: Text('Bem vindo ${loggedUser.email}!')),
+          FutureBuilder(
+            future: database.getUsers(),
+            builder: (context, snapshot) {
+              if(!snapshot.hasData){
+                return CircularProgressIndicator(color: Colors.white,);
+              }
+              return Flexible(
+                child: ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) => Center(child: Text("${snapshot.data!.length} | ${snapshot.data!.elementAt(index).name!}")),
+                ),
+              );
+            },
+          )
+        ],
+      ),
     );
   }
 }

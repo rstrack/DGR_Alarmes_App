@@ -1,3 +1,4 @@
+import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/screens/register_page.dart';
 import 'package:DGR_alarmes/widgets/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +16,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  database.init();
 
   runApp(const MyApp());
 }
