@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../theme_controller.dart';
+import 'package:DGR_alarmes/providers/theme_provider.dart';
 
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({super.key});
@@ -18,7 +18,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   @override
   void initState() {
     super.initState();
-    _darkThemeNotifier = ValueNotifier(ThemeController.instance.isDarkTheme);
+    _darkThemeNotifier = ValueNotifier(ThemeProvider.instance.isDarkTheme);
   }
 
   @override
@@ -63,7 +63,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                       value: value,
                       onChanged: (bool newValue) {
                         _darkThemeNotifier.value = newValue;
-                        ThemeController.instance.changeTheme();
+                        ThemeProvider.instance.changeTheme();
                       },
                       controlAffinity: ListTileControlAffinity.leading,
                     );
