@@ -36,4 +36,11 @@ class user {
     user _user = user.fromMap(data);
     return _user;
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "$id | $name | $email";
+  }
+
 }

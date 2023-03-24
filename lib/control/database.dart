@@ -1,87 +1,166 @@
 import 'package:DGR_alarmes/models/device.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/log.dart';
 
 class database {
   static late CollectionReference collectionUser;
   static late CollectionReference collectionDevice;
-  static late CollectionReference collectionLog;
+  static late CollectionReference collectionUserDevice;
 
   database.init() {
     var _instance = FirebaseFirestore.instance;
     collectionUser = _instance.collection('user');
     collectionDevice = _instance.collection('device');
-    collectionLog = _instance.collection('log');
-    print("--> Cria as coleções");
+    collectionUserDevice = _instance.collection('userDevice');
+    // print("--> Cria as coleções");
   }
 
+  //Cria um novo usuário apartir do user que é o auth
   static Future<void> createUser(user user) async {
-    await collectionUser
-        .doc(user.id)
-        .set(user.toMap()).then((value) => print("--> Usuário ${user.id} | ${user.name} cadastrado!"))
-        .catchError((e) => print("Erro em createUser: $e"));
+    await collectionUser.doc(user.id).set(user.toMap()).then((value) {
+      print("Usuário ${user.id} | ${user.name} cadastrado!}");
+    }).catchError((e) => print("Erro em createUser: $e"));
   }
 
-// Obtendo uma lista de todos os usuários
-  static Future<List<user>> getUsers() async {
-    QuerySnapshot<Object?> snapshot = await collectionUser.get();
-    List<QueryDocumentSnapshot<Object?>> documents = snapshot.docs;
-    List<user> users = [];
-    for (QueryDocumentSnapshot<Object?> document in documents) {
-      user? _user = await user.getUserFromDocument(document);
-      if (_user != null) {
-        users.add(_user);
-      }
+  // Busca o usuário auth
+  static Future<user?> getUserAuth() async {
+    DocumentSnapshot<Object?> documentSnapshot = await collectionUser
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get(); // where('userId', isEqualTo: userId).get();
+    if (documentSnapshot.exists) {
+      user? _user =
+          user.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+      print("--> Usuário | getUser | $_user");
+      return _user;
+    } else {
+      return null;
     }
-    return users;
   }
 
   //----------------------------------------------------------------
-
+  //Cria um novo dispositivo com o doc igual ao macAddress
   static Future<void> createDevice(device device) async {
     await collectionDevice
-        .doc()
+        .doc(device.macAddress)
         .set(device.toMap())
+        .then((value) => print("Device cadastrado!"))
         .catchError((e) => print("Erro em createDevice: $e"));
   }
 
-  // Obtendo uma lista de todos os devices
-  static Future<List<device>> getDevices() async {
-    QuerySnapshot<Object?> snapshot = await collectionDevice.get();
-    List<QueryDocumentSnapshot<Object?>> documents = snapshot.docs;
-    List<device> devices = [];
-    for (QueryDocumentSnapshot<Object?> document in documents) {
-      device? _device = await device.getDeviceFromDocument(document);
-      if (_device != null) {
-        devices.add(_device);
-      }
+  // Consulta o device de um macAddres especifico 
+  static Future<device?> getDeviceByMacAddress(
+      {required String macAddress}) async {
+    DocumentSnapshot<Object?> snapshot =
+        await collectionDevice.doc(macAddress).get();
+
+    if (snapshot.exists) {
+      device _device = device.fromMap(snapshot.data() as Map<String, dynamic>);
+      return _device;
+    } else {
+      print("Erro em getDeviceByMacAddress | snapshot.exists == false");
+      return null;
     }
+  }
+
+  // Obtem uma lista de todos os devices do usuário logado
+  static Future<List<device>> getDevicesByUserAuth() async {
+    List<device> devices = [];
+    await collectionUserDevice
+        .where("idUser", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then(
+      (snapshot) async {
+        print("Consulta getDevicesByUserAuth completa!");
+        List<QueryDocumentSnapshot<Object?>> documents = snapshot.docs;
+        for (QueryDocumentSnapshot<Object?> document in documents) {
+          device? _device = await device.getDeviceFromDocument(document);
+          if (_device != null) {
+            devices.add(_device);
+          }
+        }
+        return devices;
+      },
+      onError: (e) => print("Erro em getDevicesByUserAuth: $e"),
+    );
     return devices;
   }
 
+  // Obtem a lista de todos os usuários relacionados a um device
+  static Future<List<user>> getUsersByDevice(
+      {required String macAddress}) async {
+    //Busca dentro de UserDevice os idUsers que se relacionam com idDevice
+    QuerySnapshot<Object?> snapshot = await collectionUserDevice
+        .where("idDevice", isEqualTo: macAddress)
+        .get();
+
+    List<QueryDocumentSnapshot<Object?>> documents = snapshot.docs;
+    List<user> users = [];
+    if (documents.isNotEmpty) {
+      //Para cada idUser encontrado, faz a busca completa do User
+      for (QueryDocumentSnapshot<Object?> document in documents) {
+        var doc = document;
+        DocumentSnapshot<Object?> documentSnapshot =
+            await collectionUser.doc(doc['idUser']).get();
+        if (documentSnapshot.exists) {
+          user? _user = await user
+              .fromMap(documentSnapshot.data() as Map<String, dynamic>);
+          if (_user != null) {
+            users.add(_user);
+          }
+        }
+      }
+      return users;
+    }
+    return users;
+  }
   //----------------------------------------------------------------
 
-  static Future<void> createLog(log log) async {
-    await collectionLog
-        .doc()
-        .set(log.toMap())
+  //Cria um novo log dentro da coleção "logs", com um doc unico
+  static Future<void> createLog(
+      {required log log, required String macAddress}) async {
+    // userDevice/doc(macAddress)/logs
+    CollectionReference collectionReference =
+        collectionUserDevice.doc(macAddress).collection("logs");
+
+    // ../doc()
+    await collectionReference
+        .add(log.toMap())
+        .then((value) => print("Novo log criado!"))
         .catchError((e) => print("Erro em createLog: $e"));
   }
 
-  // Obtendo uma lista de todos os logs
-  static Future<List<log>> getLogs() async {
-    QuerySnapshot<Object?> snapshot = await collectionLog.get();
+  // Obtem uma lista de todos os logs de um device identificado pelo macAddress
+  static Future<List<log>> getLogsByDevice({required String macAddress}) async {
+    CollectionReference collectionReference =
+        collectionUserDevice.doc(macAddress).collection("logs");
+
+    QuerySnapshot<Object?> snapshot = await collectionReference.get();
 
     List<QueryDocumentSnapshot<Object?>> documents = snapshot.docs;
     List<log> logs = [];
-    for (QueryDocumentSnapshot<Object?> document in documents) {
-      log? _log = await log.getLogFromDocument(document);
-      if (_log != null) {
-        logs.add(_log);
+    if (documents.isNotEmpty) {
+      for (QueryDocumentSnapshot<Object?> document in documents) {
+        log? _log = await log.getLogFromDocument(document);
+        if (_log != null) {
+          logs.add(_log);
+        }
       }
     }
     return logs;
+  }
+
+  //--------------------------------------------------------------
+
+  //Cria a relação entre o user e o device
+  static Future<void> createUserDevice(
+      {required String macAddress, required String idUser}) async {
+    await collectionUserDevice
+        .doc()
+        .set({'idDevice': macAddress, 'idUser': idUser})
+        .then((value) => print("Novo UserDevice criado!"))
+        .catchError((e) => print("Erro em createUserDevice: $e"));
   }
 }

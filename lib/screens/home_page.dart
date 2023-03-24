@@ -27,20 +27,20 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Center(child: Text('Bem vindo ${loggedUser.email}!')),
-          FutureBuilder(
-            future: database.getUsers(),
-            builder: (context, snapshot) {
-              if(!snapshot.hasData){
-                return CircularProgressIndicator(color: Colors.white,);
-              }
-              return Flexible(
-                child: ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) => Center(child: Text("${snapshot.data!.length} | ${snapshot.data!.elementAt(index).name!}")),
-                ),
-              );
-            },
-          )
+          // FutureBuilder(
+          //   future: database.getUsersByDevice(idDevice: idDevice),
+          //   builder: (context, snapshot) {
+          //     if(!snapshot.hasData){
+          //       return CircularProgressIndicator(color: Colors.white,);
+          //     }
+          //     return Flexible(
+          //       child: ListView.builder(
+          //         itemCount: snapshot.data!.length,
+          //         itemBuilder: (context, index) => Center(child: Text("${snapshot.data!.length} | ${snapshot.data!.elementAt(index).name!}")),
+          //       ),
+          //     );
+          //   },
+          // )
         ],
       ),
     );
