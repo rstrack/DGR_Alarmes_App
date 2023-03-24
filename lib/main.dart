@@ -1,6 +1,8 @@
+import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'control/database.dart';
 import 'firebase_options.dart';
@@ -27,21 +29,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: ThemeProvider.instance,
-      builder: (context, child) {
-        return MaterialApp(
-          title: 'Alarme Residencial',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeProvider.instance.isDarkTheme ? darkTheme : lightTheme,
-          routes: {
-            '/': (context) => const MainPage(),
-            '/login_page': (context) => const LoginPage(),
-            '/register_page': (context) => const RegisterPage(),
-            '/home_page': (context) => const HomePage()
-          },
-        );
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+      ],
+      child: AnimatedBuilder(
+        animation: ThemeProvider.instance,
+        builder: (context, child) {
+          return MaterialApp(
+            title: 'Alarme Residencial',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeProvider.instance.isDarkTheme ? darkTheme : lightTheme,
+            routes: {
+              '/': (context) => const MainPage(),
+              '/login_page': (context) => const LoginPage(),
+              '/register_page': (context) => const RegisterPage(),
+              '/home_page': (context) => const HomePage()
+            },
+          );
+        },
+      ),
     );
   }
 }
