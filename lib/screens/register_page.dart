@@ -1,7 +1,12 @@
+// ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
+
 import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/models/user.dart';
+import 'package:DGR_alarmes/providers/auth_provider.dart';
+import 'package:DGR_alarmes/utils/snack_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,32 +23,36 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool _isLoading = false;
 
+  final auth = FirebaseAuth.instance;
   String _errorMessage = '';
 
-  Future<void> _login() async {
+  _registrar() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final auth = FirebaseAuth.instance;
       final name = _nameController.text.trim();
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      final result = await auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      // UserCredential result;
 
-      if (mounted && result.user != null) {
-        
-        await database.createUser(user(id: result.user!.uid, email: email, name: name));
-        
+      String? id = await Provider.of<AuthProvider>(context, listen: false)
+          .registrar(email, password);
+
+      // result = await Provider.of<AuthProvider>(context, listen: false)
+      //     .registrar(email, password);
+
+      if (mounted) {
+        await database.createUser(user(id: id, email: email, name: name));
+
         Navigator.pushNamedAndRemoveUntil(
             context, '/login_page', (route) => false,
             arguments: {'createdUser': true});
       }
+
+      return auth.currentUser!.uid;
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -82,8 +91,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           labelText: 'Nome completo',
                         ),
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Informe um nome!';
+                          if (value!.trim().isEmpty || value == null) {
+                            return "Informe o nome";
+                          }
+                          if (value.trim().length <= 3) {
+                            return "Nome muito pequeno. No min 3 letras";
                           }
                           return null;
                         },
@@ -95,8 +107,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           labelText: 'E-mail',
                         ),
                         validator: (value) {
-                          if (value!.isEmpty) {
+                          final bool emailValid = RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value!);
+                          if (value.isEmpty) {
                             return 'Informe um e-mail!';
+                          }
+                          if (!emailValid) {
+                            return 'e-mail incorreto!';
                           }
                           return null;
                         },
@@ -109,8 +127,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           labelText: 'Senha',
                         ),
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Informe a senha!';
+                          if (value!.length < 6) {
+                            return "No mínimo insira 6 dígitos";
                           }
                           return null;
                         },
@@ -121,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ? null
                             : () {
                                 if (_formKey.currentState!.validate()) {
-                                  _login();
+                                  _registrar();
                                 }
                               },
                         child: _isLoading

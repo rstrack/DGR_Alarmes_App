@@ -1,5 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:DGR_alarmes/providers/auth_provider.dart';
+import 'package:DGR_alarmes/utils/snack_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,25 +21,33 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
   String _errorMessage = '';
+  final auth = FirebaseAuth.instance;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<void> _login() async {
     setState(() {
-      _isLoading = true;
+      _isLoading = !_isLoading;
     });
 
     try {
-      final auth = FirebaseAuth.instance;
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      final result = await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      UserCredential? userCredential =
+          await Provider.of<AuthProvider>(context, listen: false)
+              .signInWithEmailAndPassword(email, password);
 
-      // if (result.user != null) {
-      //   Navigator.of(context).pushReplacementNamed('/login_page');
-      // }
+      if (userCredential != null) {
+        Navigator.pushNamed(context, '/home_page');
+      } else {
+        showCustomSnackbar(
+            context: context,
+            text: "E-mail ou senha incorretos",
+            color: Colors.black87);
+        setState(() {
+          _isLoading = !_isLoading;
+        });
+      }
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -49,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
         <String, dynamic>{'createdUser': false}) as Map;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Entrar'),
         actions: [
@@ -142,4 +156,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+//   void _showMessage(String message) {
+//   _scaffoldKey.currentState?.(SnackBar(content: Text(message),));
+// }
 }
