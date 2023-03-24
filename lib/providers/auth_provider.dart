@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:DGR_alarmes/control/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final firebaseAuth = FirebaseAuth.instance;
   User? _user;
   bool? _error;
   String? _errorMsg;
@@ -28,14 +29,15 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
+  signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential userCredential =
-          await _firebaseAuth.signInWithEmailAndPassword(
+          await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      setUser(userCredential.user);
+      // setUser(userCredential.user);
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         setError(true);
@@ -48,7 +50,29 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    await _firebaseAuth.signOut();
+    await firebaseAuth.signOut();
     setUser(null);
+  }
+
+  registrar(String email, String password) async {
+    // UserCredential? result;
+    try {
+      await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        setError(true);
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        setError(true);
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+    return firebaseAuth.currentUser!.uid;
+    // return result;
   }
 }
