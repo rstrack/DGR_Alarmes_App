@@ -23,9 +23,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -49,36 +55,16 @@ class DefaultFirebaseOptions {
     messagingSenderId: '761421169323',
     projectId: 'dgr-alarmes',
     authDomain: 'dgr-alarmes.firebaseapp.com',
+    databaseURL: 'https://dgr-alarmes-default-rtdb.firebaseio.com',
     storageBucket: 'dgr-alarmes.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBFvrQ3NbIFWKgzSI0WHXLRXaTtIGz1y3Y',
-    appId: '1:761421169323:android:3349b9bd024f79b6442dee',
+    appId: '1:761421169323:android:61d8378076bd1c69442dee',
     messagingSenderId: '761421169323',
     projectId: 'dgr-alarmes',
+    databaseURL: 'https://dgr-alarmes-default-rtdb.firebaseio.com',
     storageBucket: 'dgr-alarmes.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBykTTbIV-uSAkSk2p9Mq3ktv3y7NVJ3tc',
-    appId: '1:761421169323:ios:31dc8ff31ed099e8442dee',
-    messagingSenderId: '761421169323',
-    projectId: 'dgr-alarmes',
-    storageBucket: 'dgr-alarmes.appspot.com',
-    iosClientId:
-        '761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com',
-    iosBundleId: 'com.example.DGR_alarmes',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBykTTbIV-uSAkSk2p9Mq3ktv3y7NVJ3tc',
-    appId: '1:761421169323:ios:31dc8ff31ed099e8442dee',
-    messagingSenderId: '761421169323',
-    projectId: 'dgr-alarmes',
-    storageBucket: 'dgr-alarmes.appspot.com',
-    iosClientId:
-        '761421169323-fj6gq5sl3pnbou78ovui3p08bt1gqq0h.apps.googleusercontent.com',
-    iosBundleId: 'com.example.DGR_alarmes',
   );
 }

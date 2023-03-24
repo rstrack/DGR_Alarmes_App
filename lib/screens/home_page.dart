@@ -1,4 +1,3 @@
-import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedUser = user(id: userAuth.uid, email: userAuth.email.toString());
+    var loggedUser = User(id: userAuth.uid, email: userAuth.email.toString());
 
     return Scaffold(
       appBar: AppBar(

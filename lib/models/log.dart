@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class log {
+class Log {
   String idLog;
   String device_idDevice;
   DateTime time;
   String type;
 
-  log({
+  Log({
     required this.idLog,
     required this.device_idDevice,
     required this.time,
@@ -22,19 +22,20 @@ class log {
     };
   }
 
-  log.fromMap(Map<String, dynamic> map)
+  Log.fromMap(Map<String, dynamic> map)
       : idLog = map['idLog'],
         device_idDevice = map['device_idDevice'],
         time = DateTime.parse(map['time']),
         type = map['type'];
 
   // Obtendo um objeto Log a partir de um documento
-static Future<log?> getLogFromDocument(QueryDocumentSnapshot<Object?> document) async {
-  Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
-  if (data == null) {
-    return null;
+  static Future<Log?> getLogFromDocument(
+      QueryDocumentSnapshot<Object?> document) async {
+    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+    if (data == null) {
+      return null;
+    }
+    Log log = Log.fromMap(data);
+    return log;
   }
-  log _log = log.fromMap(data);
-  return _log;
-}
 }

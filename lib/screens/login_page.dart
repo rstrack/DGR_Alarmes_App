@@ -1,7 +1,5 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:DGR_alarmes/providers/auth_provider.dart';
-import 'package:DGR_alarmes/utils/snack_bar_custom.dart';
+import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
@@ -37,13 +35,13 @@ class _LoginPageState extends State<LoginPage> {
           await Provider.of<AuthProvider>(context, listen: false)
               .signInWithEmailAndPassword(email, password);
 
-      if (userCredential != null) {
+      if (mounted && userCredential != null) {
         Navigator.pushNamed(context, '/home_page');
       } else {
         showCustomSnackbar(
             context: context,
             text: "E-mail ou senha incorretos",
-            color: Colors.black87);
+            backgroundColor: Colors.black87);
         setState(() {
           _isLoading = !_isLoading;
         });
@@ -58,9 +56,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ??
-        <String, dynamic>{'createdUser': false}) as Map;
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -143,9 +138,6 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 16.0,
                         ),
                       ),
-                      // Text((FirebaseAuth.instance.currentUser == null)
-                      //     ? "Não encontrado!"
-                      //     : FirebaseAuth.instance.currentUser!.email!)
                     ],
                   ),
                 ),
@@ -156,7 +148,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-//   void _showMessage(String message) {
-//   _scaffoldKey.currentState?.(SnackBar(content: Text(message),));
-// }
 }

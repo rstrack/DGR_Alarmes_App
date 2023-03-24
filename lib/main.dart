@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'control/database.dart';
-import 'firebase_options.dart';
+import 'services/firebase_options.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_page.dart';
 import 'screens/login_page.dart';
@@ -19,7 +19,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  database.init();
+  Database.init();
 
   runApp(const MyApp());
 }

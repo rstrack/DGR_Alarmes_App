@@ -3,9 +3,9 @@
 import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
-import 'package:DGR_alarmes/utils/snack_bar_custom.dart';
+import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -26,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final auth = FirebaseAuth.instance;
   String _errorMessage = '';
 
-  _registrar() async {
+  _signUp() async {
     setState(() {
       _isLoading = true;
     });
@@ -36,23 +36,27 @@ class _RegisterPageState extends State<RegisterPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      // UserCredential result;
+      AuthProvider authProvider =
+          Provider.of<AuthProvider>(context, listen: false);
 
-      String? id = await Provider.of<AuthProvider>(context, listen: false)
-          .registrar(email, password);
+      String? id = await authProvider.signUp(email, password);
 
-      // result = await Provider.of<AuthProvider>(context, listen: false)
-      //     .registrar(email, password);
-
-      if (mounted) {
-        await database.createUser(user(id: id, email: email, name: name));
-
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/login_page', (route) => false,
-            arguments: {'createdUser': true});
+      //Testa se um erro não tratado foi identificado
+      if (authProvider.error == true) {
+        showCustomSnackbar(context: context, text: authProvider.errorMsg!);
+        _isLoading = false;
+        return;
       }
 
-      return auth.currentUser!.uid;
+      if (mounted && id != null) {
+        await Database.createUser(User(id: id, email: email, name: name));
+
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/login_page', (route) => false);
+        showCustomSnackbar(
+            context: context,
+            text: "Usuário criado! Faça login para continuar");
+      }
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -95,7 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             return "Informe o nome";
                           }
                           if (value.trim().length <= 3) {
-                            return "Nome muito pequeno. No min 3 letras";
+                            return "Nome deve possuir no mínimo 3 letras";
                           }
                           return null;
                         },
@@ -114,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             return 'Informe um e-mail!';
                           }
                           if (!emailValid) {
-                            return 'e-mail incorreto!';
+                            return 'E-mail inválido!';
                           }
                           return null;
                         },
@@ -128,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         validator: (value) {
                           if (value!.length < 6) {
-                            return "No mínimo insira 6 dígitos";
+                            return "Senha curta! Insira no mínimo 6 caracteres";
                           }
                           return null;
                         },
@@ -139,7 +143,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ? null
                             : () {
                                 if (_formKey.currentState!.validate()) {
-                                  _registrar();
+                                  _signUp();
                                 }
                               },
                         child: _isLoading
@@ -154,9 +158,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           fontSize: 16.0,
                         ),
                       ),
-                      // Text((FirebaseAuth.instance.currentUser == null)
-                      //     ? "Não encontrado!"
-                      //     : FirebaseAuth.instance.currentUser!.email!)
                     ],
                   ),
                 ),

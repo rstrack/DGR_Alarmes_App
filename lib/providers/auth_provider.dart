@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:DGR_alarmes/control/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +53,7 @@ class AuthProvider extends ChangeNotifier {
     setUser(null);
   }
 
-  registrar(String email, String password) async {
+  signUp(String email, String password) async {
     // UserCredential? result;
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
@@ -64,13 +63,14 @@ class AuthProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         setError(true);
-        print('The password provided is too weak.');
+        setErrorMsg('Senha fraca!');
       } else if (e.code == 'email-already-in-use') {
         setError(true);
-        print('The account already exists for that email.');
+        setErrorMsg('Já existe uma conta com este e-mail.');
       }
     } catch (e) {
-      print(e);
+      setError(true);
+      setErrorMsg(e.toString());
     }
     return firebaseAuth.currentUser!.uid;
     // return result;
