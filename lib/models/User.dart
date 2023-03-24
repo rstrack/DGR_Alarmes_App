@@ -1,15 +1,13 @@
+// ignore_for_file: camel_case_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class user {
-  String id;
+  String? id;
   String? name;
   String email;
-  // String? password;
 
-  user(
-      {required this.id,
-      this.name = '',
-      required this.email}); //, this.password});
+  user({this.id, this.name, required this.email}); //, this.password});
 
   Map<String, dynamic> toMap() {
     return {
@@ -42,5 +40,4 @@ class user {
     // TODO: implement toString
     return "$id | $name | $email";
   }
-
 }
