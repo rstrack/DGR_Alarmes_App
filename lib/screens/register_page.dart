@@ -1,7 +1,9 @@
-import 'package:DGR_alarmes/control/database.dart';
-import 'package:DGR_alarmes/models/user.dart';
+// import 'package:DGR_alarmes/models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../control/database_rtdb.dart';
+import '../models/User.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -37,9 +39,9 @@ class _RegisterPageState extends State<RegisterPage> {
       );
 
       if (mounted && result.user != null) {
-        
-        await database.createUser(user(id: result.user!.uid, email: email, name: name));
-        
+        await DatabaseRTDB.createUser(
+            user(id: result.user!.uid, email: email, name: name));
+
         Navigator.pushNamedAndRemoveUntil(
             context, '/login_page', (route) => false,
             arguments: {'createdUser': true});

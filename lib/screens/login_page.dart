@@ -1,3 +1,4 @@
+import 'package:DGR_alarmes/control/database_rtdb.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -32,9 +33,8 @@ class _LoginPageState extends State<LoginPage> {
         password: password,
       );
 
-      // if (result.user != null) {
-      //   Navigator.of(context).pushReplacementNamed('/login_page');
-      // }
+      DatabaseRTDB.getUserUID();
+
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();

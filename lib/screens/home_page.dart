@@ -1,5 +1,5 @@
 import 'package:DGR_alarmes/control/database.dart';
-import 'package:DGR_alarmes/models/user.dart';
+import 'package:DGR_alarmes/models/User.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
 

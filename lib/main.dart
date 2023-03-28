@@ -1,8 +1,9 @@
+import 'package:DGR_alarmes/control/database_rtdb.dart';
+import 'package:DGR_alarmes/screens/devices_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'control/database.dart';
 import 'firebase_options.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_page.dart';
@@ -17,7 +18,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  database.init();
+  DatabaseRTDB.init();
 
   runApp(const MyApp());
 }
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
             '/': (context) => const MainPage(),
             '/login_page': (context) => const LoginPage(),
             '/register_page': (context) => const RegisterPage(),
-            '/home_page': (context) => const HomePage()
+            '/home_page': (context) => const HomePage(),
+            '/devices_page': (context) => const DevicesPage()
           },
         );
       },

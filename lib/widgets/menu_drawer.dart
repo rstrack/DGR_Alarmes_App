@@ -43,6 +43,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
             alignment: FractionalOffset.bottomCenter,
             child: Column(
               children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.airplay_rounded),
+                    title: const Text('Devices'),
+                    onTap: () {
+                      auth.signOut();
+                      Navigator.of(context).pushNamed('/devices_page');
+                    }),
                 const Divider(),
                 const ListTile(
                     leading: Icon(Icons.settings),
