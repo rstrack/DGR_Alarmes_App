@@ -41,7 +41,7 @@ class Database {
   }
 
   //---------------------------------------------------------------- DEVICE
-  //Cria um novo dispositivo com o doc igual ao macAddress, vincula com o user auth
+  //Cria um novo dispositivo com o child igual ao macAddress, vincula com o user auth
   static Future<void> createDevice(Device device) async {
     await realTimeRef
         .child("$DEVICE/${device.macAddress}")
@@ -53,6 +53,18 @@ class Database {
     }).catchError((e) => print("Erro em createDevice: $e"));
   }
 
+  //Atualiza o dispositivo pelo macAddress
+  static Future<void> updateDevice(Device device) async {
+    await realTimeRef
+        .child("$DEVICE/${device.macAddress}")
+        .update(device.toMap())
+        .then((value) async {
+      print("Device atualizado!");
+      await createUserDevice(
+          macAddress: device.macAddress, idUser: firebaseAuth.currentUser!.uid);
+    }).catchError((e) => print("Erro em updateDevice: $e"));
+  }
+
   // Consulta o device de um macAddres especifico
   static Future<Device?> getDeviceByMacAddress(
       {required String macAddress}) async {
@@ -61,7 +73,7 @@ class Database {
         Device _device = Device.fromMap(snapshot.value as Map<String, dynamic>);
         return _device;
       } else {
-        print("Erro em getDeviceByMacAddress | snapshot.exists == false");
+        print("Erro em getDeviceByMacAddress");
         return null;
       }
     });
@@ -112,6 +124,8 @@ class Database {
   static Stream<List<Log>> getLogsByDevice({required String macAddress}) {
     return realTimeRef
         .child("$DEVICE/$macAddress/logs")
+        .orderByChild("time")
+        .limitToLast(20)
         .onValue
         .asyncMap((event) {
       List<Log> logs = [];
@@ -120,6 +134,11 @@ class Database {
       values.forEach((key, value) {
         logs.add(Log.fromMap(value));
       });
+      if (logs.isNotEmpty) {
+        print("--> ${logs.toList()}");
+      } else {
+        print("Logs está vazio!");
+      }
       return logs;
     });
   }
@@ -135,5 +154,13 @@ class Database {
         .set({'idDevice': macAddress, 'idUser': idUser})
         .then((value) => print("Novo UserDevice criado!"))
         .catchError((e) => print("Erro em createUserDevice: $e"));
+  }
+
+  static Future<void> unlinkUserDevice({required String childID}) async {
+    await realTimeRef
+        .child(childID)
+        .remove()
+        .then((value) => print("UserDevice removido!"))
+        .catchError((e) => print("Erro em unlinkUserDevice: $e"));
   }
 }

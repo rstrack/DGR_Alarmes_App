@@ -31,7 +31,13 @@ class _DevicesPageState extends State<DevicesPage> {
       ),
       body: Column(
         children: [
-          Center(child: const Text('Bem vindo!')),
+          Card(
+              elevation: 5,
+              margin: EdgeInsets.all(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: const Text('Bem vindo!'),
+              )),
           StreamBuilder(
               stream: Database.getDevicesByUserAuth(),
               builder: (context, snapshot) {
@@ -41,11 +47,34 @@ class _DevicesPageState extends State<DevicesPage> {
                   );
                 }
                 return Flexible(
-                  child: ListView.builder(
-                    itemCount: snapshot.data!.length  ,
-                    itemBuilder: (context, index) => Center(
-                        child: Text(
-                            "$index | ${snapshot.data!.elementAt(index)}")),
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => Divider(height: 1),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      Device _currentDevice = snapshot.data!.elementAt(index);
+                      return Center(
+                          child: Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.symmetric(horizontal: 2),
+                        color: (index % 2 == 0)
+                            ? Colors.indigo.shade100
+                            : Colors.indigo.shade200,
+                        child: Row(
+                          children: [
+                            Expanded(child: Text("$index | $_currentDevice")),
+                            SizedBox(width: 20),
+                            IconButton(
+                              onPressed: () {
+                                //Aqui tem que usar um StreamBuild (eu acho) para o getLogsByDevice
+                                Database.getLogsByDevice(
+                                    macAddress: _currentDevice.macAddress);
+                              },
+                              icon: Icon(Icons.segment_outlined),
+                            ),
+                          ],
+                        ),
+                      ));
+                    },
                   ),
                 );
               })
