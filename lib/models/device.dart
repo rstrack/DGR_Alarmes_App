@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Device {
-  String idDevice;
+  // String idDevice;
   String macAddress;
   bool active;
   bool triggered;
 
   Device({
-    required this.idDevice,
+    // required this.idDevice,
     required this.macAddress,
     required this.active,
     required this.triggered,
@@ -15,7 +15,7 @@ class Device {
 
   Map<String, dynamic> toMap() {
     return {
-      'idDevice': idDevice,
+      // 'idDevice': idDevice,
       'macAddress': macAddress,
       'active': active,
       'triggered': triggered,
@@ -23,7 +23,8 @@ class Device {
   }
 
   Device.fromMap(Map<String, dynamic> map)
-      : idDevice = map['idDevice'],
+      // : idDevice = map['idDevice'],
+      :
         macAddress = map['macAddress'],
         active = map['active'],
         triggered = map['triggered'];
@@ -35,7 +36,14 @@ class Device {
     if (data == null) {
       return null;
     }
-    Device device = Device.fromMap(data);
-    return device;
+    Device _device = Device.fromMap(data);
+    return _device;
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "Device | MAC: $macAddress | Active: $active | Triggered: $triggered";
+  }
+
 }

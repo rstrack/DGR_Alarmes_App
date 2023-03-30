@@ -1,10 +1,11 @@
 import 'package:DGR_alarmes/providers/auth_provider.dart';
+import 'package:DGR_alarmes/control/database.dart';
+import 'package:DGR_alarmes/screens/devices_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'control/database.dart';
 import 'services/firebase_options.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_page.dart';
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
               '/': (context) => const MainPage(),
               '/login_page': (context) => const LoginPage(),
               '/register_page': (context) => const RegisterPage(),
-              '/home_page': (context) => const HomePage()
+              '/home_page': (context) => const HomePage(),
+              '/devices_page': (context) => const DevicesPage()
             },
           );
         },
@@ -64,7 +66,6 @@ class MainPage extends StatelessWidget {
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            //print(">> ${snapshot.hasData} | ${snapshot.toString()}");
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),

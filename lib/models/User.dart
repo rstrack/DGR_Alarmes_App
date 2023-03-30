@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class UserModel {
   String? id;
   String? name;
   String email;
 
-  User({this.id, this.name, required this.email}); //, this.password});
+  UserModel({this.id, this.name, required this.email}); //, this.password});
 
   Map<String, dynamic> toMap() {
     return {
@@ -16,20 +16,20 @@ class User {
     };
   }
 
-  User.fromMap(Map<String, dynamic> map)
+  UserModel.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         name = map['name'],
         email = map['email'];
   // password = map['password'];
 
   // Método para converter QueryDocumentSnapshot<Object?> em User
-  static Future<User?> getUserFromDocument(
+  static Future<UserModel?> getUserFromDocument(
       QueryDocumentSnapshot<Object?> document) async {
     Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
     if (data == null) {
       return null;
     }
-    User user = User.fromMap(data);
+    UserModel user = UserModel.fromMap(data);
     return user;
   }
 

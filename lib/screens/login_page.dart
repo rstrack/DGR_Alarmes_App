@@ -1,7 +1,8 @@
+import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -37,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (mounted && userCredential != null) {
         Navigator.pushNamed(context, '/home_page');
+        
       } else {
         showCustomSnackbar(
             context: context,

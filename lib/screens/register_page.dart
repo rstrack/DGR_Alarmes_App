@@ -1,7 +1,5 @@
-// ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
-
 import 'package:DGR_alarmes/control/database.dart';
-import 'package:DGR_alarmes/models/user.dart';
+import 'package:DGR_alarmes/models/User.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
       }
 
       if (mounted && id != null) {
-        await Database.createUser(User(id: id, email: email, name: name));
+        await Database.createUser(UserModel(id: id, email: email, name: name));
 
         Navigator.pushNamedAndRemoveUntil(
             context, '/login_page', (route) => false);

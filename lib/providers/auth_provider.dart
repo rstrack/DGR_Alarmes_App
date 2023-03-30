@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
+  
   final firebaseAuth = FirebaseAuth.instance;
   User? _user;
   bool? _error;
