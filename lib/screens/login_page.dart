@@ -32,18 +32,20 @@ class _LoginPageState extends State<LoginPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
+      AuthProvider authProvider =
+          Provider.of<AuthProvider>(context, listen: false);
+
       UserCredential? userCredential =
-          await Provider.of<AuthProvider>(context, listen: false)
-              .signInWithEmailAndPassword(email, password);
+          await authProvider.signInWithEmailAndPassword(email, password);
 
       if (mounted && userCredential != null) {
         Navigator.pushNamed(context, '/home_page');
-        
       } else {
         showCustomSnackbar(
             context: context,
-            text: "E-mail ou senha incorretos",
+            text: authProvider.errorMsg!,
             backgroundColor: Colors.black87);
+        authProvider.setError(false);
         setState(() {
           _isLoading = !_isLoading;
         });
@@ -133,13 +135,15 @@ class _LoginPageState extends State<LoginPage> {
                             : const Text('Entrar'),
                       ),
                       const SizedBox(height: 16.0),
-                      Text(
-                        _errorMessage,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 16.0,
-                        ),
-                      ),
+                      _errorMessage != ''
+                          ? Text(
+                              _errorMessage,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 16.0,
+                              ),
+                            )
+                          : const Text(''),
                     ],
                   ),
                 ),

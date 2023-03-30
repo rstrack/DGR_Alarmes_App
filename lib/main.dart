@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => AuthProvider(),
+          create: (_) => AuthProvider(),
         ),
       ],
       child: AnimatedBuilder(

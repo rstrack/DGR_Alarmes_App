@@ -40,20 +40,22 @@ class _RegisterPageState extends State<RegisterPage> {
       String? id = await authProvider.signUp(email, password);
 
       //Testa se um erro não tratado foi identificado
-      if (authProvider.error == true) {
+      if (mounted && authProvider.error == true) {
         showCustomSnackbar(context: context, text: authProvider.errorMsg!);
         _isLoading = false;
+        authProvider.setError(false);
         return;
       }
 
       if (mounted && id != null) {
-        await Database.createUser(UserModel(id: id, email: email, name: name));
-
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/login_page', (route) => false);
-        showCustomSnackbar(
-            context: context,
-            text: "Usuário criado! Faça login para continuar");
+        await Database.createUser(UserModel(id: id, email: email, name: name))
+            .then((_) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/login_page', (route) => false);
+          showCustomSnackbar(
+              context: context,
+              text: "Usuário criado! Faça login para continuar");
+        });
       }
     } catch (e) {
       setState(() {
@@ -93,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           labelText: 'Nome completo',
                         ),
                         validator: (value) {
-                          if (value!.trim().isEmpty || value == null) {
+                          if (value!.trim().isEmpty) {
                             return "Informe o nome";
                           }
                           if (value.trim().length <= 3) {
