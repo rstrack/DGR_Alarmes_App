@@ -1,41 +1,43 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:DGR_alarmes/models/log.dart';
 
 class Device {
-  String idDevice;
   String macAddress;
   bool active;
   bool triggered;
+  Map<String, Log> logs;
 
   Device({
-    required this.idDevice,
     required this.macAddress,
     required this.active,
     required this.triggered,
+    required this.logs,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'idDevice': idDevice,
-      'macAddress': macAddress,
-      'active': active,
-      'triggered': triggered,
-    };
+  factory Device.fromJson(Map<String, dynamic> json) {
+    Map<String, dynamic> logsJson = json['logs'];
+    Map<String, Log> logs = {};
+    logsJson.forEach((key, value) {
+      logs[key] = Log.fromJson(value);
+    });
+    return Device(
+      macAddress: json.keys.first,
+      active: json['active'],
+      logs: logs,
+      triggered: json['triggered'],
+    );
   }
 
-  Device.fromMap(Map<String, dynamic> map)
-      : idDevice = map['idDevice'],
-        macAddress = map['macAddress'],
-        active = map['active'],
-        triggered = map['triggered'];
-
-  // Obtendo um objeto Device a partir de um documento
-  static Future<Device?> getDeviceFromDocument(
-      QueryDocumentSnapshot<Object?> document) async {
-    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
-    if (data == null) {
-      return null;
-    }
-    Device device = Device.fromMap(data);
-    return device;
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> logsJson = {};
+    logs.forEach((key, value) {
+      logsJson[key] = value.toJson();
+    });
+    return {
+      macAddress: {
+        'active': active,
+        'logs': logsJson,
+        'triggered': triggered,
+      }
+    };
   }
 }

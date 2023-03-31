@@ -1,6 +1,8 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:DGR_alarmes/control/database.dart';
+import 'package:DGR_alarmes/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -35,7 +37,8 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
-      // setUser(userCredential.user);
+      User? userAuth = await Database.getUserAuth();
+      setUser(userAuth);
       return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
