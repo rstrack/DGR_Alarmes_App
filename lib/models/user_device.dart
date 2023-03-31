@@ -1,27 +1,22 @@
 class UserDevice {
-  String idUser;
-  String idDevice;
-  String nickname;
+  String? id;
+  String userId;
+  String deviceId;
 
-  UserDevice({
-    required this.idUser,
-    required this.idDevice,
-    required this.nickname,
-  });
+  UserDevice({this.id, required this.userId, required this.deviceId});
 
-  factory UserDevice.fromJson(Map<String, dynamic> json) {
-    return UserDevice(
-      idUser: json['idUser'],
-      idDevice: json['idDevice'],
-      nickname: json['nickname'],
-    );
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': userId,
+      'deviceId': deviceId,
+    };
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'idUser': idUser,
-      'idDevice': idDevice,
-      'nickname': nickname,
-    };
+  static UserDevice fromMap(Map<String, dynamic> map) {
+    return UserDevice(
+      id: map['id'],
+      userId: map['userId'],
+      deviceId: map['deviceId'],
+    );
   }
 }

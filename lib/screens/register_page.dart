@@ -1,21 +1,19 @@
-// ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
-
 import 'package:DGR_alarmes/control/database.dart';
-import 'package:DGR_alarmes/models/user.dart';
+import 'package:DGR_alarmes/models/User.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 
-class RegisterPage extends ConsumerStatefulWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  ConsumerState<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends ConsumerState<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -36,25 +34,28 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      var localAuthProvider = ref.read(authProvider.notifier);
+      AuthProvider authProvider =
+          Provider.of<AuthProvider>(context, listen: false);
 
-      String? id = await localAuthProvider.signUp(email, password);
+      String? id = await authProvider.signUp(email, password);
 
       //Testa se um erro não tratado foi identificado
-      if (localAuthProvider.error == true) {
-        showCustomSnackbar(context: context, text: localAuthProvider.errorMsg!);
+      if (mounted && authProvider.error == true) {
+        showCustomSnackbar(context: context, text: authProvider.errorMsg!);
         _isLoading = false;
+        authProvider.setError(false);
         return;
       }
 
       if (mounted && id != null) {
-        await Database.createUser(User(id: id, email: email, name: name));
-
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/login_page', (route) => false);
-        showCustomSnackbar(
-            context: context,
-            text: "Usuário criado! Faça login para continuar");
+        await Database.createUser(UserModel(id: id, email: email, name: name))
+            .then((_) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/login_page', (route) => false);
+          showCustomSnackbar(
+              context: context,
+              text: "Usuário criado! Faça login para continuar");
+        });
       }
     } catch (e) {
       setState(() {
@@ -94,7 +95,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           labelText: 'Nome completo',
                         ),
                         validator: (value) {
-                          if (value!.trim().isEmpty || value == null) {
+                          if (value!.trim().isEmpty) {
                             return "Informe o nome";
                           }
                           if (value.trim().length <= 3) {

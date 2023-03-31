@@ -1,17 +1,18 @@
+import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  ConsumerState<LoginPage> createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends ConsumerState<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -31,17 +32,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      UserCredential? userCredential = await ref
-          .read(authProvider.notifier)
-          .signInWithEmailAndPassword(email, password);
+      AuthProvider authProvider =
+          Provider.of<AuthProvider>(context, listen: false);
+
+      UserCredential? userCredential =
+          await authProvider.signInWithEmailAndPassword(email, password);
 
       if (mounted && userCredential != null) {
         Navigator.pushNamed(context, '/home_page');
       } else {
         showCustomSnackbar(
             context: context,
-            text: "E-mail ou senha incorretos",
+            text: authProvider.errorMsg!,
             backgroundColor: Colors.black87);
+        authProvider.setError(false);
         setState(() {
           _isLoading = !_isLoading;
         });
@@ -131,13 +135,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             : const Text('Entrar'),
                       ),
                       const SizedBox(height: 16.0),
-                      Text(
-                        _errorMessage,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 16.0,
-                        ),
-                      ),
+                      _errorMessage != ''
+                          ? Text(
+                              _errorMessage,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 16.0,
+                              ),
+                            )
+                          : const Text(''),
                     ],
                   ),
                 ),

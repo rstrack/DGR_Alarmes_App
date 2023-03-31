@@ -1,9 +1,13 @@
+import 'package:DGR_alarmes/providers/auth_provider.dart';
+import 'package:DGR_alarmes/control/database.dart';
+import 'package:DGR_alarmes/providers/device_provider.dart';
+import 'package:DGR_alarmes/providers/user_provider.dart';
+import 'package:DGR_alarmes/screens/devices_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 
-import 'control/database.dart';
 import 'services/firebase_options.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_page.dart';
@@ -20,34 +24,43 @@ Future<void> main() async {
 
   Database.init();
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var darkmode = ref.watch(themeProvider);
-
-    return MaterialApp(
-      title: 'Alarme Residencial',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DeviceProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(),
+        ),
+      ],
+      child: AnimatedBuilder(
+        animation: ThemeProvider.instance,
+        builder: (context, child) {
+          return MaterialApp(
+            title: 'Alarme Residencial',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeProvider.instance.isDarkTheme ? darkTheme : lightTheme,
+            routes: {
+              '/': (context) => const MainPage(),
+              '/login_page': (context) => const LoginPage(),
+              '/register_page': (context) => const RegisterPage(),
+              '/home_page': (context) => const HomePage(),
+              '/devices_page': (context) => const DevicesPage()
+            },
+          );
+        },
       ),
-      darkTheme: darkTheme,
-      themeMode: darkmode ? ThemeMode.dark : ThemeMode.light,
-      routes: {
-        '/': (context) => const MainPage(),
-        '/login_page': (context) => const LoginPage(),
-        '/register_page': (context) => const RegisterPage(),
-        '/home_page': (context) => const HomePage()
-      },
     );
   }
 }
@@ -61,7 +74,6 @@ class MainPage extends StatelessWidget {
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            //print(">> ${snapshot.hasData} | ${snapshot.toString()}");
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
