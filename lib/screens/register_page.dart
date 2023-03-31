@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
 
-import 'package:DGR_alarmes/control/database.dart';
+import 'package:DGR_alarmes/controller/database.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
@@ -43,7 +43,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       //Testa se um erro não tratado foi identificado
       if (localAuthProvider.error == true) {
         showCustomSnackbar(context: context, text: localAuthProvider.errorMsg!);
-        _isLoading = false;
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
 

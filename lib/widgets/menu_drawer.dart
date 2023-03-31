@@ -1,5 +1,5 @@
-import 'package:DGR_alarmes/providers/auth_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:DGR_alarmes/providers/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
 
 import 'package:DGR_alarmes/providers/theme_provider.dart';
@@ -18,7 +18,7 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
   @override
   Widget build(BuildContext context) {
     var isDarkMode = ref.watch(themeProvider);
-    var user = ref.watch(authProvider).user;
+    final user = ref.watch(userProvider);
     return Drawer(
       child: Column(
         children: [
@@ -26,7 +26,17 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
             child: Column(
               children: [
                 UserAccountsDrawerHeader(
-                  accountName: Text('${user}'),
+                  accountName: user.when(
+                    data: (user) {
+                      return Text(user.name);
+                    },
+                    loading: () => const CircularProgressIndicator(),
+                    error: (error, stackTrace) {
+                      print(error);
+                      print(stackTrace);
+                      const Text('Erro ao carregar dados');
+                    },
+                  ),
                   accountEmail: Text('${auth.currentUser!.email}'),
                   currentAccountPicture: const CircleAvatar(
                     child: Icon(Icons.person),

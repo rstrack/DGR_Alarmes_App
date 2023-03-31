@@ -39,9 +39,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         Navigator.pushNamed(context, '/home_page');
       } else {
         showCustomSnackbar(
-            context: context,
-            text: "E-mail ou senha incorretos",
-            backgroundColor: Colors.black87);
+            context: context, text: "E-mail ou senha incorretos");
         setState(() {
           _isLoading = !_isLoading;
         });

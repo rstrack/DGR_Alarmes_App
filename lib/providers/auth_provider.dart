@@ -1,30 +1,16 @@
 import 'dart:async';
 
-import 'package:DGR_alarmes/control/database.dart';
-import 'package:DGR_alarmes/models/user.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthNotifier extends ChangeNotifier {
   final firebaseAuth = FirebaseAuth.instance;
-  User? _user;
   bool? _error;
   String? _errorMsg;
 
-  User? get user => _user;
   bool? get error => _error;
   String? get errorMsg => _errorMsg;
-
-  Future<void> setUser() async {
-    _user = await Database.getUserAuth();
-    notifyListeners();
-  }
-
-  void resetUser() {
-    _user = null;
-    notifyListeners();
-  }
 
   void setError(bool error) {
     _error = error;
@@ -43,10 +29,6 @@ class AuthNotifier extends ChangeNotifier {
         email: email,
         password: password,
       );
-      setUser().whenComplete(() {
-        print(user);
-        return;
-      });
       return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -61,10 +43,9 @@ class AuthNotifier extends ChangeNotifier {
 
   Future<void> signOut() async {
     await firebaseAuth.signOut();
-    resetUser();
   }
 
-  signUp(String email, String password) async {
+  Future<String?> signUp(String email, String password) async {
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -74,13 +55,16 @@ class AuthNotifier extends ChangeNotifier {
       if (e.code == 'weak-password') {
         setError(true);
         setErrorMsg('Senha fraca!');
+        return null;
       } else if (e.code == 'email-already-in-use') {
         setError(true);
         setErrorMsg('Já existe uma conta com este e-mail.');
+        return null;
       }
     } catch (e) {
       setError(true);
       setErrorMsg(e.toString());
+      return null;
     }
     return firebaseAuth.currentUser!.uid;
   }
@@ -89,3 +73,7 @@ class AuthNotifier extends ChangeNotifier {
 final authProvider = ChangeNotifierProvider<AuthNotifier>((ref) {
   return AuthNotifier();
 });
+
+final streamAuthProvider = StreamProvider<User?>(
+  (ref) => FirebaseAuth.instance.authStateChanges(),
+);
