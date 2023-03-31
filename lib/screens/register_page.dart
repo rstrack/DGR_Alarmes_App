@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
-
 import 'package:DGR_alarmes/controller/database.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
@@ -41,7 +39,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       String? id = await localAuthProvider.signUp(email, password);
 
       //Testa se um erro não tratado foi identificado
-      if (localAuthProvider.error == true) {
+      if (mounted && localAuthProvider.error == true) {
         showCustomSnackbar(context: context, text: localAuthProvider.errorMsg!);
         setState(() {
           _isLoading = false;
@@ -50,13 +48,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       }
 
       if (mounted && id != null) {
-        await Database.createUser(User(id: id, email: email, name: name));
-
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/login_page', (route) => false);
-        showCustomSnackbar(
-            context: context,
-            text: "Usuário criado! Faça login para continuar");
+        Database.createUser(User(id: id, email: email, name: name))
+            .whenComplete(() {
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/login_page', (route) => false);
+          showCustomSnackbar(
+              context: context,
+              text: "Usuário criado! Faça login para continuar");
+        });
       }
     } catch (e) {
       setState(() {
@@ -79,11 +78,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Image.asset(
-                //   'assets/logo.png',
-                //   width: MediaQuery.of(context).size.width * 0.6,
-                //   color: Theme.of(context).primaryColor,
-                // ),
                 Form(
                   key: _formKey,
                   child: Column(
