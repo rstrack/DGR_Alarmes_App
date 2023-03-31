@@ -4,8 +4,9 @@ import 'package:DGR_alarmes/control/database.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthProvider extends ChangeNotifier {
+class AuthNotifier extends ChangeNotifier {
   final firebaseAuth = FirebaseAuth.instance;
   User? _user;
   bool? _error;
@@ -15,8 +16,13 @@ class AuthProvider extends ChangeNotifier {
   bool? get error => _error;
   String? get errorMsg => _errorMsg;
 
-  void setUser(User? user) {
-    _user = user;
+  Future<void> setUser() async {
+    _user = await Database.getUserAuth();
+    notifyListeners();
+  }
+
+  void resetUser() {
+    _user = null;
     notifyListeners();
   }
 
@@ -37,8 +43,10 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
-      User? userAuth = await Database.getUserAuth();
-      setUser(userAuth);
+      setUser().whenComplete(() {
+        print(user);
+        return;
+      });
       return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -53,11 +61,10 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signOut() async {
     await firebaseAuth.signOut();
-    setUser(null);
+    resetUser();
   }
 
   signUp(String email, String password) async {
-    // UserCredential? result;
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -76,6 +83,9 @@ class AuthProvider extends ChangeNotifier {
       setErrorMsg(e.toString());
     }
     return firebaseAuth.currentUser!.uid;
-    // return result;
   }
 }
+
+final authProvider = ChangeNotifierProvider<AuthNotifier>((ref) {
+  return AuthNotifier();
+});

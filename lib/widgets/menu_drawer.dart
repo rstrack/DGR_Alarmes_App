@@ -1,28 +1,24 @@
+import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:DGR_alarmes/providers/theme_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MenuDrawer extends StatefulWidget {
+class MenuDrawer extends ConsumerStatefulWidget {
   const MenuDrawer({super.key});
 
   @override
-  State<MenuDrawer> createState() => _MenuDrawerState();
+  ConsumerState<MenuDrawer> createState() => _MenuDrawerState();
 }
 
-class _MenuDrawerState extends State<MenuDrawer> {
+class _MenuDrawerState extends ConsumerState<MenuDrawer> {
   final auth = FirebaseAuth.instance;
-
-  late final ValueNotifier<bool> _darkThemeNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-    _darkThemeNotifier = ValueNotifier(ThemeProvider.instance.isDarkTheme);
-  }
 
   @override
   Widget build(BuildContext context) {
+    var isDarkMode = ref.watch(themeProvider);
+    var user = ref.watch(authProvider).user;
     return Drawer(
       child: Column(
         children: [
@@ -30,7 +26,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             child: Column(
               children: [
                 UserAccountsDrawerHeader(
-                  accountName: const Text("Nome"),
+                  accountName: Text('${user}'),
                   accountEmail: Text('${auth.currentUser!.email}'),
                   currentAccountPicture: const CircleAvatar(
                     child: Icon(Icons.person),
@@ -55,19 +51,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           '/login_page', (route) => false);
                     }),
-                ValueListenableBuilder<bool>(
-                  valueListenable: _darkThemeNotifier,
-                  builder: (BuildContext context, bool value, Widget? child) {
-                    return SwitchListTile(
-                      title: const Text('Tema escuro'),
-                      value: value,
-                      onChanged: (bool newValue) {
-                        _darkThemeNotifier.value = newValue;
-                        ThemeProvider.instance.changeTheme();
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
-                    );
+                SwitchListTile(
+                  title: const Text('Tema escuro'),
+                  value: isDarkMode,
+                  onChanged: (bool newValue) {
+                    ref.read(themeProvider.notifier).toggle();
                   },
+                  controlAffinity: ListTileControlAffinity.leading,
                 ),
               ],
             ),

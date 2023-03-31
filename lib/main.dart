@@ -1,8 +1,7 @@
-import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'control/database.dart';
 import 'services/firebase_options.dart';
@@ -21,36 +20,34 @@ Future<void> main() async {
 
   Database.init();
 
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => AuthProvider(),
-        ),
-      ],
-      child: AnimatedBuilder(
-        animation: ThemeProvider.instance,
-        builder: (context, child) {
-          return MaterialApp(
-            title: 'Alarme Residencial',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeProvider.instance.isDarkTheme ? darkTheme : lightTheme,
-            routes: {
-              '/': (context) => const MainPage(),
-              '/login_page': (context) => const LoginPage(),
-              '/register_page': (context) => const RegisterPage(),
-              '/home_page': (context) => const HomePage()
-            },
-          );
-        },
+  Widget build(BuildContext context, WidgetRef ref) {
+    var darkmode = ref.watch(themeProvider);
+
+    return MaterialApp(
+      title: 'Alarme Residencial',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
       ),
+      darkTheme: darkTheme,
+      themeMode: darkmode ? ThemeMode.dark : ThemeMode.light,
+      routes: {
+        '/': (context) => const MainPage(),
+        '/login_page': (context) => const LoginPage(),
+        '/register_page': (context) => const RegisterPage(),
+        '/home_page': (context) => const HomePage()
+      },
     );
   }
 }

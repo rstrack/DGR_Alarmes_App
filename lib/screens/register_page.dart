@@ -6,16 +6,16 @@ import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  ConsumerState<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends ConsumerState<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -36,14 +36,13 @@ class _RegisterPageState extends State<RegisterPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      AuthProvider authProvider =
-          Provider.of<AuthProvider>(context, listen: false);
+      var localAuthProvider = ref.read(authProvider.notifier);
 
-      String? id = await authProvider.signUp(email, password);
+      String? id = await localAuthProvider.signUp(email, password);
 
       //Testa se um erro não tratado foi identificado
-      if (authProvider.error == true) {
-        showCustomSnackbar(context: context, text: authProvider.errorMsg!);
+      if (localAuthProvider.error == true) {
+        showCustomSnackbar(context: context, text: localAuthProvider.errorMsg!);
         _isLoading = false;
         return;
       }
