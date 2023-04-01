@@ -9,6 +9,8 @@ class Database {
   static late final DatabaseReference realTimeRef;
   static late final FirebaseAuth firebaseAuth;
 
+  static dynamic lastRecord = null;
+
   static String userPath = "user";
   static String devicePath = "device";
   static String userDevicePath = "userdevice";
@@ -18,7 +20,7 @@ class Database {
     realTimeRef = FirebaseDatabase.instance.ref();
   }
 
-  //Cria um novo usuário apartir do user que é o auth
+  /// Cria um novo usuário apartir do user que é o auth
   static Future<void> createUser(UserModel user) async {
     await realTimeRef
         .child("$userPath/${user.id}")
@@ -28,7 +30,7 @@ class Database {
     }).catchError((e) => print("Erro em createUser: $e"));
   }
 
-  // Busca o usuário auth
+  /// Busca o usuário auth
   static Future<UserModel?> getUserAuth() async {
     return realTimeRef
         .child("$userPath/${firebaseAuth.currentUser!.uid}")
@@ -44,7 +46,7 @@ class Database {
   }
 
   //---------------------------------------------------------------- DEVICE
-  //Cria um novo dispositivo com o child igual ao macAddress, vincula com o user auth
+  /// Cria um novo dispositivo com o child igual ao macAddress, vincula com o user auth
   static Future<void> createDevice(Device device) async {
     await realTimeRef
         .child("$devicePath/${device.macAddress}")
@@ -56,19 +58,26 @@ class Database {
     }).catchError((e) => print("Erro em createDevice: $e"));
   }
 
-  //Atualiza o dispositivo pelo macAddress
-  static Future<void> updateDevice(Device device) async {
+  /// Atualiza o estado active pelo macAddress
+  static Future<void> changeDeviceState(
+      {required String macAddress, bool? active}) async {
     await realTimeRef
-        .child("$devicePath/${device.macAddress}")
-        .update(device.toMap())
-        .then((value) async {
-      print("Device atualizado!");
-      await createUserDevice(
-          macAddress: device.macAddress, idUser: firebaseAuth.currentUser!.uid);
-    }).catchError((e) => print("Erro em updateDevice: $e"));
+        .child("$devicePath/${macAddress}")
+        .update({"active": active}).then((value) async {
+      print("Device['active'] = $active");
+    }).catchError((e) => print("Erro em changeDeviceState: $e"));
   }
 
-  // Consulta o device de um macAddres especifico
+  /// Desliga o buzzer pelo macAddress
+  static Future<void> disableBuzzer({required String macAddress}) async {
+    await realTimeRef
+        .child("$devicePath/${macAddress}")
+        .update({"triggered": false}).then((value) async {
+      print("Buzzer desabilitado!");
+    }).catchError((e) => print("Erro em disableBuzzer: $e"));
+  }
+
+  /// Consulta o device de um macAddres especifico
   static Future<Device?> getDeviceByMacAddress(
       {required String macAddress}) async {
     return realTimeRef.child("$devicePath/$macAddress").get().then((snapshot) {
@@ -82,7 +91,7 @@ class Database {
     });
   }
 
-  // Obtem uma lista de todos os devices do usuário logado
+  /// Obtem uma lista de todos os devices do usuário logado
   static Stream<List<Device>> getDevicesByUserAuth() {
     return realTimeRef
         .child("$userDevicePath")
@@ -112,7 +121,7 @@ class Database {
 
   //---------------------------------------------------------------- LOGS
 
-  //Cria um novo log dentro da coleção "logs", com um doc unico
+  /// Cria um novo log dentro da coleção "logs", com um doc unico
   static Future<void> createLog(
       {required Log log, required String macAddress}) async {
     return realTimeRef
@@ -123,12 +132,17 @@ class Database {
         .catchError((e) => print("Erro em createLog: $e"));
   }
 
-  // Obtem uma lista de todos os logs de um device identificado pelo macAddress
-  static Stream<List<Log>> getLogsByDevice({required String macAddress}) {
+  /// Obtem uma lista de todos os logs de um device identificado pelo macAddress
+  static Stream<List<Log>> getLogsByDevice(
+      {required String macAddress, int? limit = 20}) {
+    // Define o último registro da página anterior como ponto de partida para buscar a próxima página
+    dynamic lastRecordTime;
+
     return realTimeRef
         .child("$devicePath/$macAddress/logs")
         .orderByChild("time")
-        .limitToLast(20)
+        .startAt(lastRecordTime)
+        .limitToFirst(limit!)
         .onValue
         .asyncMap((event) {
       List<Log> logs = [];
@@ -142,13 +156,48 @@ class Database {
       } else {
         print("Logs está vazio!");
       }
+      // Salva o valor do tempo do último registro da página atual para usar como ponto de partida na próxima busca
+      lastRecordTime = logs.last.time;
       return logs;
     });
   }
 
+  static Future<List<Log>> getTestFutureLogsByDevice(
+      {required String macAddress, int? limit = 6}) async {
+    // Define o último registro da página anterior como ponto de partida para buscar a próxima página
+    print(
+        "------------------------------------------------ : ${lastRecord ?? "null"}");
+    DataSnapshot dataSnapshot = await realTimeRef
+        .child("$devicePath/$macAddress/logs")
+        .startAt(lastRecord)
+        .limitToFirst(limit!)
+        .get();
+
+    List<Log> logs = [];
+    if (dataSnapshot.exists) {
+      Map<String, dynamic> values = dataSnapshot.value as Map<String, dynamic>;
+      int i = 0;
+      values.forEach((key, value) {
+        logs.add(Log.fromMap(value));
+        print("--> [${++i}] $key | ${Log.fromMap(value)}");
+      });
+      if (logs.isEmpty) {
+        print("Logs está vazio!");
+      }
+      // Salva o valor do tempo do último registro da página atual para usar como ponto de partida na próxima busca
+      lastRecord = values.entries.first.key;
+      // print("---> ${logs.toList()}");
+    }
+    return logs;
+  }
+
   //-------------------------------------------------------------- UserDevice
 
-  //Cria a relação entre o user e o device
+  /// Cria a relação entre o user e o device.
+  ///
+  /// macAddress: É o macAddres do device que está querendo vincular ao user.
+  ///
+  /// idUser: É o id do user que está querendo vincular ao device.
   static Future<void> createUserDevice(
       {required String macAddress, required String idUser}) async {
     await realTimeRef
@@ -159,6 +208,9 @@ class Database {
         .catchError((e) => print("Erro em createUserDevice: $e"));
   }
 
+  /// Desvincula a relação entre user e device
+  ///
+  /// childID: id do grupo que vincula User com Device
   static Future<void> unlinkUserDevice({required String childID}) async {
     await realTimeRef
         .child(childID)

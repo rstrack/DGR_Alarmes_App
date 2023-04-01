@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:DGR_alarmes/models/log.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../control/database.dart';
@@ -23,10 +25,21 @@ class _DevicesPageState extends State<DevicesPage> {
         elevation: 5,
         child: Icon(Icons.add),
         onPressed: () async {
-          await Database.createDevice(Device(
-              macAddress: _generateMacAddress(),
-              active: false,
-              triggered: false));
+          String _macAddress = _generateMacAddress();
+          await Database.createDevice(
+              Device(macAddress: _macAddress, active: false, triggered: false));
+
+          // FOR Criado para testes
+          for (int j = 0; j < 25; j++) {
+            Log log = Log(
+              device_idDevice: _macAddress,
+              time: (DateTime.now().millisecondsSinceEpoch/1000).toInt()-(j*100),
+              type: Random().nextInt(3).toString(),
+            );
+            await Database.createLog(log: log, macAddress: _macAddress)
+            .then((value) => print("--> $log"))
+            .catchError((e) => print("Erro teste de createLog $e"));
+          }
         },
       ),
       body: Column(
@@ -64,10 +77,9 @@ class _DevicesPageState extends State<DevicesPage> {
                             Expanded(child: Text("$index | $_currentDevice")),
                             SizedBox(width: 20),
                             IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 //Aqui tem que usar um StreamBuild (eu acho) para o getLogsByDevice
-                                Database.getLogsByDevice(
-                                    macAddress: _currentDevice.macAddress);
+                                await Database.getTestFutureLogsByDevice(macAddress: _currentDevice.macAddress);
                               },
                               icon: Icon(Icons.segment_outlined),
                             ),

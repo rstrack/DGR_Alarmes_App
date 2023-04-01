@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Log {
   // String idLog;
   String device_idDevice;
-  DateTime time;
+  int time;
   String type;
 
   Log({
@@ -17,7 +17,7 @@ class Log {
     return {
       // 'idLog': idLog,
       'device_idDevice': device_idDevice,
-      'time': time.toIso8601String(),
+      'time': time,
       'type': type,
     };
   }
@@ -26,7 +26,7 @@ class Log {
       // : idLog = map['idLog'],
       :
         device_idDevice = map['device_idDevice'],
-        time = DateTime.parse(map['time']),
+        time = map['time'],
         type = map['type'];
 
   // Obtendo um objeto Log a partir de um documento
@@ -38,4 +38,11 @@ static Future<Log?> getLogFromDocument(QueryDocumentSnapshot<Object?> document) 
   Log _log = Log.fromMap(data);
   return _log;
 }
+
+@override
+  String toString() {
+    // TODO: implement toString
+    return "Log | $device_idDevice | $time | ${DateTime.fromMillisecondsSinceEpoch(time*1000)} | $type";
+  }
+
 }
