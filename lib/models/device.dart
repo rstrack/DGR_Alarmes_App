@@ -1,18 +1,26 @@
 import 'package:DGR_alarmes/models/log.dart';
 
 class Device {
-  String macAddress;
-  bool active;
-  bool triggered;
-  Map<String, Log> logs;
+  late String macAddress;
+  late bool active;
+  late bool triggered;
+  late Map<String, Log>? logs;
 
   Device({
     required this.macAddress,
     required this.active,
     required this.triggered,
-    required this.logs,
+    this.logs,
   });
 
+  Device.empty() {
+    macAddress = "";
+    active = false;
+    triggered = false;
+    logs = {};
+  }
+
+  ///Transforma um Json com chave em um Device
   factory Device.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> logsJson = json['logs'];
     Map<String, Log> logs = {};
@@ -27,9 +35,26 @@ class Device {
     );
   }
 
+  ///Transforma um Json sem chave + a chave [macAddress] em um Device
+  factory Device.fromJson2(Map json, String macAddress) {
+    Map<String, Log> logs = {};
+    if (json.containsKey('logs')) {
+      Map<String, dynamic> logsJson = json['logs'];
+      logsJson.forEach((key, value) {
+        logs[key] = Log.fromJson(value);
+      });
+    }
+    return Device(
+      macAddress: macAddress,
+      active: json['active'],
+      logs: logs,
+      triggered: json['triggered'],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     Map<String, dynamic> logsJson = {};
-    logs.forEach((key, value) {
+    logs?.forEach((key, value) {
       logsJson[key] = value.toJson();
     });
     return {

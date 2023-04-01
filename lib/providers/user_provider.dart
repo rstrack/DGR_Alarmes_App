@@ -9,8 +9,12 @@ final userProvider = StreamProvider<User>((ref) {
 
   if (user != null) {
     var ref = FirebaseDatabase.instance.ref();
-    return ref.child('user/${user.uid}').onValue.map(
-        (event) => User.fromJson(event.snapshot.value as Map<String, dynamic>));
+    return ref.child('user/${user.uid}').onValue.map((event) {
+      return User(
+          id: (event.snapshot.value as Map)['id'],
+          email: (event.snapshot.value as Map)['email'],
+          name: (event.snapshot.value as Map)['name']);
+    });
   } else {
     return const Stream.empty();
   }

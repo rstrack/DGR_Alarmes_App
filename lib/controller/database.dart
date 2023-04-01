@@ -1,16 +1,12 @@
+import 'package:DGR_alarmes/models/device.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:DGR_alarmes/models/user_device.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:firebase_database/firebase_database.dart';
 
 class Database {
-  static late final DatabaseReference _ref;
-  static late final FirebaseAuth _auth;
-
-  Database.init() {
-    _auth = FirebaseAuth.instance;
-    _ref = FirebaseDatabase.instance.ref();
-  }
+  static final DatabaseReference _ref = FirebaseDatabase.instance.ref();
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   //cria usuário no RTDB
   static Future<void> createUser(User user) async {
@@ -45,22 +41,31 @@ class Database {
     });
   }
 
-  static Future<List<UserDevice>?> getDevicesByUser() async {
+  static Future<List<UserDevice>> getDevicesByUser() async {
     List<UserDevice> listUserDevice = [];
     _ref
-        .child('userDevice')
+        .child('userdevice')
         .orderByChild("idUser")
         .equalTo(_auth.currentUser!.uid)
         .once()
         .then((DatabaseEvent event) {
-      (event.snapshot.value as Map<String, UserDevice>).forEach((key, value) {
-        listUserDevice.add(value);
+      (event.snapshot.value as Map<String, dynamic>).forEach((key, value) {
+        listUserDevice.add(UserDevice.fromJson(value));
       });
+      print(listUserDevice);
       return listUserDevice;
     }).catchError((e) {
       //print(e);
       return listUserDevice;
     });
-    return null;
+    return [];
+  }
+
+  static Future<Device?> getDevice(String macAddress) {
+    _ref.child('device/$macAddress').once().then((DatabaseEvent event) {
+      print(event.snapshot.value);
+      return Device.fromJson2(event.snapshot.value as Map, macAddress);
+    });
+    return Future.value();
   }
 }

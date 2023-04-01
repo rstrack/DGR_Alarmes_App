@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'controller/database.dart';
 import 'services/firebase_options.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_page.dart';
@@ -17,8 +16,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  Database.init();
 
   runApp(
     const ProviderScope(
