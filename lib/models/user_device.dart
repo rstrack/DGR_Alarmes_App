@@ -9,7 +9,7 @@ class UserDevice {
     required this.nickname,
   });
 
-  factory UserDevice.fromJson(Map<String, dynamic> json) {
+  factory UserDevice.fromJson(Map json) {
     return UserDevice(
       idUser: json['idUser'],
       idDevice: json['idDevice'],
@@ -17,7 +17,7 @@ class UserDevice {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map toJson() {
     return {
       'idUser': idUser,
       'idDevice': idDevice,

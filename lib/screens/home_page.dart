@@ -1,5 +1,6 @@
 import 'package:DGR_alarmes/providers/device_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,18 +17,23 @@ class _HomePageState extends ConsumerState<HomePage> {
   final userAuth = FirebaseAuth.instance.currentUser!;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('DGR Alarmes'),
       ),
-      drawer: const MenuDrawer(),
+      drawer: MenuDrawer(),
       body: Column(
         children: [
           Center(child: Text('Bem vindo ${userAuth.email}!')),
           Center(
-            child: Text('DISPOSITIVO SELECIONADO: ${device.device?.toJson()}'),
+            child: Text('DISPOSITIVO SELECIONADO: ${device.device}'),
           )
         ],
       ),

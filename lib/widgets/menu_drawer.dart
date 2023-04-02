@@ -1,31 +1,21 @@
 import 'package:DGR_alarmes/providers/device_provider.dart';
 import 'package:DGR_alarmes/providers/user_provider.dart';
+import 'package:DGR_alarmes/widgets/device_dropdown_button.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
 
 import 'package:DGR_alarmes/providers/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MenuDrawer extends ConsumerStatefulWidget {
-  const MenuDrawer({super.key});
-
-  @override
-  ConsumerState<MenuDrawer> createState() => _MenuDrawerState();
-}
-
-class _MenuDrawerState extends ConsumerState<MenuDrawer> {
+class MenuDrawer extends ConsumerWidget {
   final auth = FirebaseAuth.instance;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  MenuDrawer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     var isDarkMode = ref.watch(themeProvider);
     final user = ref.watch(userProvider);
-    final device = ref.watch(deviceProvider);
     return Drawer(
       child: Column(
         children: [
@@ -48,20 +38,12 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
                   ),
                 ),
                 // ------------ DROPDOWN ------------ //
-                DropdownButton<String>(
-                  value: device.device?.macAddress,
-                  items: device.userDevices
-                      .map((userDevice) => DropdownMenuItem(
-                          value: userDevice.idDevice,
-                          child: Text(userDevice.nickname)))
-                      .toList(),
-                  onChanged: (String? value) {
-                    if (value != null) {
-                      print(value);
-
-                      ref.read(deviceProvider.notifier).getDevice(value);
-                    }
-                  },
+                Container(
+                  margin: const EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
+                  color: Colors.indigo,
+                  width: double.infinity,
+                  child: const DeviceDropdownButton(),
                 ),
               ],
             ),

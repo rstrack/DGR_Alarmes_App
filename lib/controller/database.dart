@@ -49,7 +49,7 @@ class Database {
         .equalTo(_auth.currentUser!.uid)
         .once()
         .then((DatabaseEvent event) {
-      (event.snapshot.value as Map<String, dynamic>).forEach((key, value) {
+      (event.snapshot.value as Map).forEach((key, value) {
         listUserDevice.add(UserDevice.fromJson(value));
       });
       print(listUserDevice);

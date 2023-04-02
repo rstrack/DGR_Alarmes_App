@@ -1,42 +1,43 @@
 import 'package:DGR_alarmes/controller/device_controller.dart';
+import 'package:DGR_alarmes/controller/log_controller.dart';
 import 'package:DGR_alarmes/controller/user_device_controller.dart';
 import 'package:DGR_alarmes/models/device.dart';
+import 'package:DGR_alarmes/models/log.dart';
 import 'package:flutter/material.dart';
 import 'package:DGR_alarmes/models/user_device.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DeviceNotifier extends ChangeNotifier {
+  List<Log> logs = [];
   List<UserDevice> userDevices = [];
-  Device? device;
+  String? device;
 
   DeviceNotifier() {
     _init();
   }
 
-  //TENTAR FAZER UMA LÓGICA PARA DEIXAR O PRIMEIRO DISPOSITIVO DA LISTA SELECIONADO
-  void _init() {
-    listDevices().whenComplete(() {
-      if (userDevices.isNotEmpty) {
-        getDevice(userDevices[0].idDevice);
-      }
-    });
+  void _init() async {
+    await listDevices();
+    if (userDevices.isNotEmpty) {
+      getDevice(userDevices[0].idDevice);
+    }
   }
 
-  Future listDevices() async {
-    UserDeviceController.instance.listDevices().then((response) {
-      userDevices = response;
-      notifyListeners();
-    });
+  listDevices() async {
+    userDevices = await UserDeviceController.instance.listDevices();
+    notifyListeners();
   }
 
   getDevice(String macAddress) {
-    try {
-      DeviceController.instance.getDevice(macAddress).then((response) {
-        device = response;
-        notifyListeners();
-      });
-    } catch (e) {
-      print('ERRO: $e');
+    device = macAddress;
+    notifyListeners();
+  }
+
+  getLogs(String macAddress) async {
+    List<Log> aux = await LogController.instance.getLogs(macAddress);
+    if (aux.isNotEmpty) {
+      logs = aux;
+      notifyListeners();
     }
   }
 }

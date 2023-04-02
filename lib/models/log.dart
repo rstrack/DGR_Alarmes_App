@@ -4,14 +4,14 @@ class Log {
 
   Log({required this.time, required this.type});
 
-  factory Log.fromJson(Map<String, dynamic> json) {
+  factory Log.fromJson(Map json) {
     return Log(
       time: json['time'],
       type: json['type'],
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map toJson() {
     return {
       'time': time,
       'type': type,

@@ -9,7 +9,7 @@ class User {
     required this.email,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
+  factory User.fromJson(Map json) {
     return User(
       id: json.keys.first,
       name: json['name'],
@@ -17,7 +17,7 @@ class User {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map toJson() {
     return {
       'name': name,
       'email': email,

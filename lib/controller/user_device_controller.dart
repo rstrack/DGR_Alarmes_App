@@ -15,7 +15,7 @@ class UserDeviceController {
         .equalTo(_auth.currentUser!.uid)
         .once();
 
-    final data = event.snapshot.value as Map<String, dynamic>;
+    final data = event.snapshot.value as Map;
     userDevices = [];
     data.forEach((key, value) {
       userDevices.add(UserDevice.fromJson(value));
