@@ -1,6 +1,7 @@
+import 'package:DGR_alarmes/controller/device_controller.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
+import 'package:DGR_alarmes/screens/summary_page.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,26 +18,14 @@ class _HomePageState extends ConsumerState<HomePage> {
   final userAuth = FirebaseAuth.instance.currentUser!;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
+    ref.read(deviceProvider.notifier).listenDevice();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('DGR Alarmes'),
-      ),
-      drawer: MenuDrawer(),
-      body: Column(
-        children: [
-          Center(child: Text('Bem vindo ${userAuth.email}!')),
-          Center(
-            child: Text('DISPOSITIVO SELECIONADO: ${device.device}'),
-          )
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('DGR Alarmes'),
+        ),
+        drawer: MenuDrawer(),
+        body: device.userDevices.isNotEmpty ? const SummaryPage() : null);
   }
 }

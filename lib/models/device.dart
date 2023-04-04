@@ -1,5 +1,3 @@
-import 'package:DGR_alarmes/models/log.dart';
-
 class Device {
   late String macAddress;
   late bool active;

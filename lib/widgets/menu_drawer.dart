@@ -19,35 +19,29 @@ class MenuDrawer extends ConsumerWidget {
     return Drawer(
       child: Column(
         children: [
-          Expanded(
-            child: Column(
-              children: [
-                UserAccountsDrawerHeader(
-                  accountName: user.when(
-                    data: (user) {
-                      return Text(user.name);
-                    },
-                    loading: () => const CircularProgressIndicator(),
-                    error: (error, stackTrace) {
-                      return Text('$error');
-                    },
-                  ),
-                  accountEmail: Text('${auth.currentUser!.email}'),
-                  currentAccountPicture: const CircleAvatar(
-                    child: Icon(Icons.person),
-                  ),
-                ),
-                // ------------ DROPDOWN ------------ //
-                Container(
-                  margin: const EdgeInsets.all(0),
-                  padding: const EdgeInsets.all(0),
-                  color: Colors.indigo,
-                  width: double.infinity,
-                  child: const DeviceDropdownButton(),
-                ),
-              ],
+          UserAccountsDrawerHeader(
+            margin: EdgeInsets.zero,
+            accountName: user.when(
+              data: (user) {
+                return Text(user.name);
+              },
+              loading: () => const CircularProgressIndicator(),
+              error: (error, stackTrace) {
+                return Text('$error');
+              },
+            ),
+            accountEmail: Text('${auth.currentUser!.email}'),
+            currentAccountPicture: const CircleAvatar(
+              child: Icon(Icons.person),
             ),
           ),
+          // ------------ DROPDOWN ------------ //
+          Container(
+            color: Colors.indigo,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const DeviceDropdownButton(),
+          ),
+          const Expanded(child: SizedBox()),
           Align(
             alignment: FractionalOffset.bottomCenter,
             child: Column(

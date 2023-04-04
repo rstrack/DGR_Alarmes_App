@@ -14,11 +14,11 @@ class DeviceController {
   }
 
   Future<void> changeDeviceState(Device device) async {
-    await _ref.child(device.macAddress).update({"active": !device.active});
+    await _ref.child('device/${device.macAddress}/active').set(!device.active);
   }
 
   Future<void> disableBuzzer(Device device) async {
-    await _ref.child(device.macAddress).update({"triggered": false});
+    await _ref.child('device/${device.macAddress}/triggered').set(false);
   }
 
   static DeviceController instance = DeviceController();
