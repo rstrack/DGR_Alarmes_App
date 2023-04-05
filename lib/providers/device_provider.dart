@@ -21,10 +21,8 @@ class DeviceNotifier extends ChangeNotifier {
   void _init() async {
     await listDevices();
     if (userDevices.isNotEmpty) {
-      getMacAddress(userDevices[0].idDevice);
+      await setMacAddress(userDevices[0].idDevice);
     }
-    device = await DeviceController.instance.getDevice(macAddress!);
-    notifyListeners();
   }
 
   listDevices() async {
@@ -32,8 +30,9 @@ class DeviceNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  getMacAddress(String mac) {
+  setMacAddress(String mac) async {
     macAddress = mac;
+    device = await DeviceController.instance.getDevice(macAddress!);
     notifyListeners();
   }
 
@@ -53,6 +52,11 @@ class DeviceNotifier extends ChangeNotifier {
 
   changeDeviceState() async {
     await DeviceController.instance.changeDeviceState(device!);
+    notifyListeners();
+  }
+
+  disableBuzzer() async {
+    await DeviceController.instance.disableBuzzer(device!);
     notifyListeners();
   }
 

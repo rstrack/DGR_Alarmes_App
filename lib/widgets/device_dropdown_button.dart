@@ -11,7 +11,6 @@ class DeviceDropdownButton extends ConsumerWidget {
     return Row(
       children: [
         DropdownButton<String>(
-          style: const TextStyle(color: Colors.black),
           value: device.macAddress,
           selectedItemBuilder: (context) {
             return device.userDevices.map((userDevice) {
@@ -34,7 +33,7 @@ class DeviceDropdownButton extends ConsumerWidget {
               .toList(),
           onChanged: (String? value) {
             if (value != null) {
-              ref.read(deviceProvider.notifier).getMacAddress(value);
+              ref.read(deviceProvider.notifier).setMacAddress(value);
             }
           },
         ),
