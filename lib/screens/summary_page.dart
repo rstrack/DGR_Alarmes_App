@@ -13,15 +13,18 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
+    bool alarmTriggered = device.device!.triggered == true ? true : false;
+    bool alarmStatus = device.device!.active == true ? true : false;
     return Scaffold(
       body: device.device != null
           ? Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: device.device!.triggered == true
+                    child: alarmTriggered
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -48,7 +51,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                               )
                             ],
                           )
-                        : device.device!.active == true
+                        : alarmStatus
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -103,7 +106,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                                 ],
                               ),
                   ),
-                  device.device!.triggered == true
+                  alarmTriggered
                       ? TextButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
@@ -115,7 +118,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                           },
                           child: const Text("Interromper",
                               style: TextStyle(color: Colors.white)))
-                      : device.device!.active == true
+                      : alarmStatus == true
                           ? TextButton(
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
@@ -139,7 +142,37 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                                 ref.read(deviceProvider).changeDeviceState();
                               },
                               child: const Text("Ativar",
-                                  style: TextStyle(color: Colors.white)))
+                                  style: TextStyle(color: Colors.white))),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          // var type = 0;
+                          // color: type == 0 ? Colors.green : Colors.red,
+                          // color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Colors.grey[300]!),
+                              bottom: BorderSide(color: Colors.grey[300]!),
+                            ),
+                          ),
+                          child: ListTile(
+                            // textColor: type == 0 ? Colors.green : Colors.red,
+                            leading: const Icon(Icons.power_settings_new),
+                            iconColor: alarmStatus ? Colors.green : Colors.red,
+                            title: Text(
+                              ref.read(deviceProvider).device!.macAddress,
+                            ),
+                            subtitle: Text("Tempo"),
+                          ),
+                        );
+                      },
+                    ),
+                  )
                 ],
               ),
             )
