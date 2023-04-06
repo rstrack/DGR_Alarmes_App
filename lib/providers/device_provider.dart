@@ -13,6 +13,9 @@ class DeviceNotifier extends ChangeNotifier {
   List<UserDevice> userDevices = [];
   String? macAddress;
   Device? device;
+  bool isLoading = false;
+
+  String _lastAddedLogKey = "";
 
   DeviceNotifier() {
     _init();
@@ -26,27 +29,32 @@ class DeviceNotifier extends ChangeNotifier {
   }
 
   listDevices() async {
+    isLoading = true;
+    notifyListeners();
     userDevices = await UserDeviceController.instance.listDevices();
+    isLoading = false;
     notifyListeners();
   }
 
   setMacAddress(String mac) async {
+    isLoading = true;
+    notifyListeners();
     macAddress = mac;
     device = await DeviceController.instance.getDevice(macAddress!);
+    logs = await LogController.instance.getLogs(macAddress!, limit: 10);
+    isLoading = false;
     notifyListeners();
   }
 
-  setDevice(Device newDevice) {
-    device = newDevice;
+  updateDevice(String key, bool value) async {
+    isLoading = true;
     notifyListeners();
-  }
-
-  updateDevice(String key, bool value) {
     if (key == 'active') {
       device!.active = value;
     } else if (key == 'triggered') {
       device!.triggered = value;
     }
+    isLoading = false;
     notifyListeners();
   }
 
@@ -56,16 +64,11 @@ class DeviceNotifier extends ChangeNotifier {
   }
 
   disableBuzzer() async {
-    await DeviceController.instance.disableBuzzer(device!);
+    isLoading = true;
     notifyListeners();
-  }
-
-  getLogs(String macAddress) async {
-    List<Log> aux = await LogController.instance.getLogs(macAddress);
-    if (aux.isNotEmpty) {
-      logs = aux;
-      notifyListeners();
-    }
+    await DeviceController.instance.disableBuzzer(device!);
+    isLoading = false;
+    notifyListeners();
   }
 
   listenDevice() {

@@ -5,17 +5,15 @@ class LogController {
   static final DatabaseReference _ref = FirebaseDatabase.instance.ref();
 
   ///recupera os 30 últimos logs e, se existir mais de 30 logs, exclui os mais antigos
-  getLogs(String macAddress, {int limit = 30}) async {
-    DatabaseEvent event = await _ref
+  Future<List<Log>> getLogs(String macAddress, {int limit = 30}) async {
+    DataSnapshot snapshot = await _ref
         .child('log/$macAddress')
         .orderByChild('time')
         .limitToLast(limit)
-        .once();
+        .get();
+    if (snapshot.value == null) return [];
 
-    if (event.snapshot.value == null) return;
-
-    List<Log> logs = [];
-    final data = event.snapshot.value as Map;
+    final data = snapshot.value as Map;
 
     if (data.length == 30) {
       //exclusão de logs excedentes
@@ -31,10 +29,12 @@ class LogController {
         });
       }
     }
+    List<Log> logs = [];
     data.forEach((key, value) {
       logs.add(Log.fromJson(value));
     });
-    return logs.reversed.toList();
+    logs.sort((a, b) => b.time.compareTo(a.time));
+    return logs;
   }
 
   static LogController instance = LogController();

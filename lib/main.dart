@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'services/firebase_options.dart';
 import 'providers/theme_provider.dart';
@@ -16,7 +17,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  initializeDateFormatting('pt_BR', null);
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -30,7 +31,6 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var darkmode = ref.watch(themeProvider);
-
     return MaterialApp(
       title: 'Alarme Residencial',
       debugShowCheckedModeBanner: false,

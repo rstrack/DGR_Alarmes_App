@@ -17,4 +17,9 @@ class Log {
       'type': type,
     };
   }
+
+  @override
+  String toString() {
+    return "Time: $time | Type: $type";
+  }
 }

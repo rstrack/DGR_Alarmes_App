@@ -52,10 +52,8 @@ class Database {
       (event.snapshot.value as Map).forEach((key, value) {
         listUserDevice.add(UserDevice.fromJson(value));
       });
-      print(listUserDevice);
       return listUserDevice;
     }).catchError((e) {
-      //print(e);
       return listUserDevice;
     });
     return [];
@@ -63,7 +61,6 @@ class Database {
 
   static Future<Device?> getDevice(String macAddress) {
     _ref.child('device/$macAddress').once().then((DatabaseEvent event) {
-      print(event.snapshot.value);
       return Device.fromJson2(event.snapshot.value as Map, macAddress);
     });
     return Future.value();
