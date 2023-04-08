@@ -1,5 +1,5 @@
-import 'package:DGR_alarmes/controller/device_controller.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
+import 'package:DGR_alarmes/screens/no_devices_page.dart';
 import 'package:DGR_alarmes/screens/summary_page.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
@@ -26,6 +26,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           title: const Text('DGR Alarmes'),
         ),
         drawer: MenuDrawer(),
-        body: device.userDevices.isNotEmpty ? const SummaryPage() : null);
+        body: device.userDevices.isNotEmpty
+            ? const SummaryPage()
+            : const NoDevicesPage());
   }
 }
