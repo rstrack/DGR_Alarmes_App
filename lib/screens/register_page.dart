@@ -1,10 +1,11 @@
-import 'package:DGR_alarmes/controller/database.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
+
+import 'package:DGR_alarmes/controller/user_controller.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
@@ -34,10 +35,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      var localAuthProvider = ref.read(authProvider.notifier);
+      var localAuthProvider = ref.watch(authProvider);
 
-      String? id = await localAuthProvider.signUp(email, password);
-
+      String? id =
+          await ref.read(authProvider.notifier).signUp(email, password);
+      print("ID: $id");
       //Testa se um erro não tratado foi identificado
       if (mounted && localAuthProvider.error == true) {
         showCustomSnackbar(context: context, text: localAuthProvider.errorMsg!);
@@ -48,14 +50,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       }
 
       if (mounted && id != null) {
-        Database.createUser(User(id: id, email: email, name: name))
-            .whenComplete(() {
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/login_page', (route) => false);
-          showCustomSnackbar(
-              context: context,
-              text: "Usuário criado! Faça login para continuar");
-        });
+        await UserController.instance
+            .createUser(User(id: id, email: email, name: name));
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/login_page', (route) => false);
+        showCustomSnackbar(
+            context: context,
+            text: "Usuário criado! Faça login para continuar");
       }
     } catch (e) {
       setState(() {
@@ -90,7 +91,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           labelText: 'Nome completo',
                         ),
                         validator: (value) {
-                          if (value!.trim().isEmpty || value == null) {
+                          if (value!.trim().isEmpty) {
                             return "Informe o nome";
                           }
                           if (value.trim().length <= 3) {

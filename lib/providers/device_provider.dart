@@ -1,12 +1,14 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'package:DGR_alarmes/controller/device_controller.dart';
 import 'package:DGR_alarmes/controller/log_controller.dart';
 import 'package:DGR_alarmes/controller/user_device_controller.dart';
 import 'package:DGR_alarmes/models/device.dart';
 import 'package:DGR_alarmes/models/log.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:DGR_alarmes/models/user_device.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DeviceNotifier extends ChangeNotifier {
   List<Log> logs = [];
@@ -14,8 +16,7 @@ class DeviceNotifier extends ChangeNotifier {
   String? macAddress;
   Device? device;
   bool isLoading = false;
-
-  String _lastAddedLogKey = "";
+  StreamSubscription<DatabaseEvent>? _subscription;
 
   DeviceNotifier() {
     _init();
@@ -74,13 +75,19 @@ class DeviceNotifier extends ChangeNotifier {
   listenDevice() {
     if (macAddress != null) {
       final ref = FirebaseDatabase.instance.ref();
-      ref.child('device/$macAddress').onChildChanged.listen((event) {
+      _subscription =
+          ref.child('device/$macAddress').onChildChanged.listen((event) {
         if (event.snapshot.value != null) {
           updateDevice(
               event.snapshot.key as String, event.snapshot.value as bool);
         }
       });
     }
+  }
+
+  cancelListen() {
+    _subscription?.cancel();
+    _subscription = null;
   }
 }
 

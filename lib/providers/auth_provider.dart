@@ -24,6 +24,7 @@ class AuthNotifier extends ChangeNotifier {
 
   signInWithEmailAndPassword(String email, String password) async {
     try {
+      setError(false);
       UserCredential userCredential =
           await firebaseAuth.signInWithEmailAndPassword(
         email: email,
@@ -47,10 +48,13 @@ class AuthNotifier extends ChangeNotifier {
 
   Future<String?> signUp(String email, String password) async {
     try {
-      await firebaseAuth.createUserWithEmailAndPassword(
+      setError(false);
+      UserCredential userCredential =
+          await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         setError(true);
@@ -66,7 +70,7 @@ class AuthNotifier extends ChangeNotifier {
       setErrorMsg(e.toString());
       return null;
     }
-    return firebaseAuth.currentUser!.uid;
+    return null;
   }
 }
 

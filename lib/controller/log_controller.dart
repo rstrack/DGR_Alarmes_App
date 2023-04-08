@@ -1,5 +1,6 @@
-import 'package:DGR_alarmes/models/log.dart';
 import 'package:firebase_database/firebase_database.dart';
+
+import 'package:DGR_alarmes/models/log.dart';
 
 class LogController {
   static final DatabaseReference _ref = FirebaseDatabase.instance.ref();

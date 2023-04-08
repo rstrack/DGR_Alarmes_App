@@ -1,7 +1,8 @@
-import 'package:DGR_alarmes/providers/log_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
+import 'package:DGR_alarmes/providers/log_provider.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
 import 'package:DGR_alarmes/widgets/alarm_action_button.dart';
 import 'package:DGR_alarmes/widgets/alarm_status.dart';
@@ -45,6 +46,20 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                             : item.type == 1
                                 ? "Alarme desativado"
                                 : "Alarme disparado";
+                        final icon = item.type == 0
+                            ? const Icon(
+                                Icons.power_settings_new,
+                                color: Colors.green,
+                              )
+                            : item.type == 1
+                                ? const Icon(
+                                    Icons.power_settings_new,
+                                    color: Colors.blueGrey,
+                                  )
+                                : const Icon(
+                                    Icons.notification_important,
+                                    color: Colors.red,
+                                  );
                         final time = DateTime.fromMillisecondsSinceEpoch(
                             item.time * 1000);
                         final formattedTime =
@@ -57,7 +72,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                             ),
                           ),
                           child: ListTile(
-                            leading: const Icon(Icons.power_settings_new),
+                            leading: icon,
                             title: Text(typeText),
                             subtitle: Text(formattedTime),
                           ),

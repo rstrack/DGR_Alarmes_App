@@ -15,11 +15,13 @@ class UserDeviceController {
         .equalTo(_auth.currentUser!.uid)
         .once();
 
-    final data = event.snapshot.value as Map;
+    final data = event.snapshot.value;
     userDevices = [];
-    data.forEach((key, value) {
-      userDevices.add(UserDevice.fromJson(value));
-    });
+    if (data != null) {
+      (data as Map).forEach((key, value) {
+        userDevices.add(UserDevice.fromJson(value));
+      });
+    }
     return userDevices;
   }
 

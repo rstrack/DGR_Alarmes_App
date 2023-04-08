@@ -30,7 +30,7 @@ class MenuDrawer extends ConsumerWidget {
                 return Text('$error');
               },
             ),
-            accountEmail: Text('${auth.currentUser!.email}'),
+            accountEmail: Text('${auth.currentUser?.email}'),
             currentAccountPicture: const CircleAvatar(
               child: Icon(Icons.person),
             ),
@@ -54,6 +54,7 @@ class MenuDrawer extends ConsumerWidget {
                     leading: const Icon(Icons.logout_outlined),
                     title: const Text('Sair'),
                     onTap: () {
+                      ref.read(deviceProvider.notifier).cancelListen();
                       auth.signOut();
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           '/login_page', (route) => false);

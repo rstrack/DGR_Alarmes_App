@@ -9,7 +9,7 @@ class AlarmStatus extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final deviceNotifier = ref.watch(deviceProvider);
     final iconData = deviceNotifier.device!.triggered
-        ? Icons.add_alert_sharp
+        ? Icons.notification_important
         : deviceNotifier.device!.active
             ? Icons.security
             : Icons.security;

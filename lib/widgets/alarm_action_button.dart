@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:DGR_alarmes/providers/device_provider.dart';
 
 class AlarmActionButton extends ConsumerWidget {
@@ -18,15 +19,9 @@ class AlarmActionButton extends ConsumerWidget {
         ? () => ref.watch(deviceProvider.notifier).disableBuzzer()
         : () => ref.watch(deviceProvider.notifier).changeDeviceState();
 
-    return TextButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.indigo),
-      ),
+    return FilledButton(
       onPressed: onPressed,
-      child: Text(
-        buttonText,
-        style: const TextStyle(color: Colors.white),
-      ),
+      child: Text(buttonText),
     );
   }
 }
