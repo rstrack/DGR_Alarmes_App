@@ -25,7 +25,7 @@ class _DevicesPageState extends ConsumerState<DevicesPage> {
         children: [
           const SizedBox(height: 50),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Wrap(
                 children: device.userDevices
