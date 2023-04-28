@@ -1,9 +1,11 @@
+import 'package:DGR_alarmes/screens/devices_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'screens/events_page.dart';
 import 'services/firebase_options.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_page.dart';
@@ -43,7 +45,9 @@ class MyApp extends ConsumerWidget {
         '/': (context) => const MainPage(),
         '/login_page': (context) => const LoginPage(),
         '/register_page': (context) => const RegisterPage(),
-        '/home_page': (context) => const HomePage()
+        '/home_page': (context) => const HomePage(),
+        '/events_page': (context) => const EventsPage(),
+        '/devices_page': (context) => const DevicesPage(),
       },
     );
   }

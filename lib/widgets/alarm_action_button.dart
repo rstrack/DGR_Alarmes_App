@@ -9,14 +9,16 @@ class AlarmActionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deviceNotifier = ref.watch(deviceProvider);
-    final buttonText = deviceNotifier.device!.triggered
+    final buttonText = deviceNotifier.device!.triggered //
         ? 'Interromper'
         : deviceNotifier.device!.active
             ? 'Desativar'
             : 'Ativar';
 
     final onPressed = deviceNotifier.device!.triggered
-        ? () => ref.watch(deviceProvider.notifier).disableBuzzer()
+        ? () => ref
+            .watch(deviceProvider.notifier)
+            .disableBuzzer() //Se disparado, ao pressionar desabilita o buzzer, se não muda estado
         : () => ref.watch(deviceProvider.notifier).changeDeviceState();
 
     return FilledButton(

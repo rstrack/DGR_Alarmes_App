@@ -41,6 +41,36 @@ class MenuDrawer extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: const DeviceDropdownButton(),
           ),
+          ListTile(
+            leading: const Icon(Icons.center_focus_strong, color: Colors.white),
+            title: const Text(
+              'Dispositivos',
+              style: TextStyle(color: Colors.white),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            // minLeadingWidth: 0,
+            horizontalTitleGap: 0,
+            tileColor: Colors.indigo,
+            onTap: () {
+              Navigator.of(context).pushNamed('/devices_page');
+              // Navigator.pushNamed(context, '/devices_page');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.event, color: Colors.white),
+            title: const Text(
+              'Eventos',
+              style: TextStyle(color: Colors.white),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            // minLeadingWidth: 0,
+            horizontalTitleGap: 0,
+            tileColor: Colors.indigo,
+            onTap: () {
+              // Navigator.of(context).pushNamed('/events_page');
+              Navigator.pushNamed(context, '/events_page');
+            },
+          ),
           const Expanded(child: SizedBox()),
           Align(
             alignment: FractionalOffset.bottomCenter,
