@@ -19,7 +19,6 @@ final userProvider = StreamProvider<User>((ref) {
       return const Stream.empty();
     }
   } catch (e) {
-    print(e);
     return const Stream.empty();
   }
 });

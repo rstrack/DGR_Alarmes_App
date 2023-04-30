@@ -18,7 +18,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
-    final log = ref.watch(logProvider);
+    final log = ref.watch(logProvider(10));
     // print(device.macAddress);
     return Scaffold(
       body: device.device != null
@@ -92,8 +92,4 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
             ),
     );
   }
-
-  // Widget teste(){
-  //   return DropdownButton(items: , onChanged: onChanged)
-  // }
 }

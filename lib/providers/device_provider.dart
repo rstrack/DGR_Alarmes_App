@@ -15,7 +15,7 @@ class DeviceNotifier extends ChangeNotifier {
   List<UserDevice> userDevices = [];
   String? macAddress;
   Device? device;
-  bool isLoading = false;
+  bool isLoading = true;
   StreamSubscription<DatabaseEvent>? _subscription;
 
   DeviceNotifier() {
@@ -26,6 +26,7 @@ class DeviceNotifier extends ChangeNotifier {
     await listDevices();
     if (userDevices.isNotEmpty) {
       await setMacAddress(userDevices[0].idDevice);
+      listenDevice();
     }
   }
 
@@ -85,8 +86,10 @@ class DeviceNotifier extends ChangeNotifier {
     }
   }
 
-  cancelListen() {
-    _subscription?.cancel();
+  Future<void> cancelListen() async {
+    if (_subscription != null) {
+      await _subscription!.cancel();
+    }
     _subscription = null;
   }
 }

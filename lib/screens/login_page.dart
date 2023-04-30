@@ -1,4 +1,7 @@
 import 'package:DGR_alarmes/providers/auth_provider.dart';
+import 'package:DGR_alarmes/providers/device_provider.dart';
+import 'package:DGR_alarmes/providers/log_provider.dart';
+import 'package:DGR_alarmes/providers/user_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,6 +39,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           .signInWithEmailAndPassword(email, password);
 
       if (mounted && userCredential != null) {
+        ref.invalidate(authProvider);
+        ref.invalidate(deviceProvider);
+        ref.invalidate(logProvider);
+        ref.invalidate(userProvider);
         Navigator.pushNamed(context, '/home_page');
       } else {
         showCustomSnackbar(

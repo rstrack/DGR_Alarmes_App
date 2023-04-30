@@ -1,10 +1,12 @@
+import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
+import 'package:DGR_alarmes/providers/log_provider.dart';
 import 'package:DGR_alarmes/providers/user_provider.dart';
+import 'package:DGR_alarmes/providers/theme_provider.dart';
 import 'package:DGR_alarmes/widgets/device_dropdown_button.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
 
-import 'package:DGR_alarmes/providers/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MenuDrawer extends ConsumerWidget {
@@ -35,7 +37,6 @@ class MenuDrawer extends ConsumerWidget {
               child: Icon(Icons.person),
             ),
           ),
-          // ------------ DROPDOWN ------------ //
           Container(
             color: Colors.indigo,
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -52,8 +53,10 @@ class MenuDrawer extends ConsumerWidget {
             horizontalTitleGap: 0,
             tileColor: Colors.indigo,
             onTap: () {
-              Navigator.of(context).pushNamed('/devices_page');
-              // Navigator.pushNamed(context, '/devices_page');
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/devices_page',
+                (route) => false,
+              );
             },
           ),
           ListTile(
@@ -67,8 +70,10 @@ class MenuDrawer extends ConsumerWidget {
             horizontalTitleGap: 0,
             tileColor: Colors.indigo,
             onTap: () {
-              // Navigator.of(context).pushNamed('/events_page');
-              Navigator.pushNamed(context, '/events_page');
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/events_page',
+                (route) => false,
+              );
             },
           ),
           const Expanded(child: SizedBox()),
@@ -84,10 +89,14 @@ class MenuDrawer extends ConsumerWidget {
                     leading: const Icon(Icons.logout_outlined),
                     title: const Text('Sair'),
                     onTap: () {
-                      ref.read(deviceProvider.notifier).cancelListen();
-                      auth.signOut();
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/login_page', (route) => false);
+                      ref
+                          .read(deviceProvider.notifier)
+                          .cancelListen()
+                          .whenComplete(() {
+                        ref.read(authProvider.notifier).signOut();
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/login_page', (route) => false);
+                      });
                     }),
                 SwitchListTile(
                   title: const Text('Tema escuro'),

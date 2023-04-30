@@ -12,12 +12,12 @@ class EventsPage extends ConsumerStatefulWidget {
 }
 
 class _EventsPageState extends ConsumerState<EventsPage> {
-  int _select = 9;
+  int? _select = 9;
 
   @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
-    final log = ref.watch(logProvider);
+    final log = ref.watch(logProvider(30));
 
     List<Log> filteredData = log.when(
       data: (data) {

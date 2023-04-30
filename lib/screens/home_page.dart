@@ -20,14 +20,15 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
-    ref.read(deviceProvider.notifier).listenDevice();
     return Scaffold(
         appBar: AppBar(
           title: const Text('DGR Alarmes'),
         ),
         drawer: MenuDrawer(),
-        body: device.userDevices.isNotEmpty
-            ? const SummaryPage()
-            : const NoDevicesPage());
+        body: device.isLoading
+            ? const CircularProgressIndicator()
+            : device.userDevices.isNotEmpty
+                ? const SummaryPage()
+                : const NoDevicesPage());
   }
 }
