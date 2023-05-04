@@ -47,7 +47,7 @@ class MyApp extends ConsumerWidget {
         '/register_page': (context) => const RegisterPage(),
         '/home_page': (context) => const HomePage(),
         '/events_page': (context) => const EventsPage(),
-        '/devices_page': (context) => const DevicesPage(),
+        '/devices_page': (context) => const DevicesPage()
       },
     );
   }

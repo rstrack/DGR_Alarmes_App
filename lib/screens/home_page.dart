@@ -30,5 +30,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             : device.userDevices.isNotEmpty
                 ? const SummaryPage()
                 : const NoDevicesPage());
+                // : DiscoveryPage());
   }
 }
