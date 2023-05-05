@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart'
-    as flutterBarcodeScanner;
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 import '../controller/bluetooth_controller.dart';
@@ -48,10 +47,8 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
           Center(
               child: FilledButton(
                   onPressed: () async {
-                    String barcode =
-                        await flutterBarcodeScanner.FlutterBarcodeScanner
-                            .scanBarcode("#FFFFFF", "Cancelar", false,
-                                flutterBarcodeScanner.ScanMode.QR);
+                    String barcode = await FlutterBarcodeScanner.scanBarcode(
+                        "#FFFFFF", "Cancelar", false, ScanMode.QR);
                     print("QR CODE: $barcode");
                     //CRIAR DIPOSITIVO
                   },
@@ -68,7 +65,7 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
       builder: (BuildContext context) {
         // Crie o AlertDialog com um ListView.builder que lista os dispositivos
         return AlertDialog(
-          title: Text('Dispositivos'),
+          title: const Text('Dispositivos'),
           content: SingleChildScrollView(
             child: SizedBox(
               width: double.maxFinite,
@@ -79,7 +76,7 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
                     AsyncSnapshot<List<BluetoothDiscoveryResult>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting ||
                       !snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   final devicesList = snapshot.data;
@@ -105,24 +102,24 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
                                 return AlertDialog(
                                   content: Row(
                                     children: [
-                                      CircularProgressIndicator(),
-                                      SizedBox(width: 20),
-                                      Text("Conectando com ${deviceName}"),
+                                      const CircularProgressIndicator(),
+                                      const SizedBox(width: 20),
+                                      Text("Conectando com $deviceName"),
                                     ],
                                   ),
                                 );
                               },
                             );
 
-                            await bluetoothController
-                                .pairWithBluetoothDevice(device.address);
+                            bluetoothController
+                                .pairWithBluetoothDevice(device.address)
+                                .whenComplete(() async {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              await openWifiNetworkModal(context);
+                            });
 
                             // Fecha o diálogo de carregamento e faça algo quando um dispositivo for selecionado
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            
-                            await openWifiNetworkModal(context);
-
                           } catch (e) {
                             print(
                                 'Erro ao conectar ao dispositivo ${device.address}: $e');
@@ -133,14 +130,14 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Erro'),
+                                  title: const Text('Erro'),
                                   content: Text(
                                       'Não foi possível conectar ao dispositivo ${device.address}. Tente novamente.'),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(),
-                                      child: Text('OK'),
+                                      child: const Text('OK'),
                                     ),
                                   ],
                                 );
@@ -149,10 +146,10 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
                           }
                         },
                         child: ListTile(
-                          leading: Icon(Icons.bluetooth),
+                          leading: const Icon(Icons.bluetooth),
                           title: Text(
                             deviceName!,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16.0,
                             ),
@@ -162,14 +159,14 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
                             children: [
                               Text(
                                 'MAC: ${devicesList[index].device.address.toString()}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 14.0,
                                 ),
                               ),
                               Text(
                                 'RSSI: ${devicesList[index].rssi.toString()} dBm',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 14.0,
                                 ),
@@ -194,8 +191,7 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
     );
   }
 
-  Future<void> openWifiNetworkModal(
-      BuildContext context) async {
+  Future<void> openWifiNetworkModal(BuildContext context) async {
     String ssid = '';
     String password = '';
 
@@ -203,20 +199,20 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Rede WiFi'),
+          title: const Text('Rede WiFi'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 onChanged: (value) => ssid = value,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'SSID',
                 ),
               ),
               TextField(
                 onChanged: (value) => password = value,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Senha',
                 ),
               ),
@@ -225,14 +221,14 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 bluetoothController.sendWifiNetwork(ssid, password);
               },
-              child: Text('Confirmar'),
+              child: const Text('Confirmar'),
             ),
           ],
         );
@@ -249,9 +245,9 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
             alignment: Alignment.center,
             width: 50,
             height: 20,
-            child: Text("Ligue o Bluetooth e a localização!"),
+            child: const Text("Ligue o Bluetooth e a localização!"),
           ),
-          icon: Icon(Icons.bluetooth_disabled_outlined, size: 40),
+          icon: const Icon(Icons.bluetooth_disabled_outlined, size: 40),
         );
       },
     );
