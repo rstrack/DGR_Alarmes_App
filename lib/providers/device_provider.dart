@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'package:DGR_alarmes/controller/device_controller.dart';
-import 'package:DGR_alarmes/controller/log_controller.dart';
-import 'package:DGR_alarmes/controller/user_device_controller.dart';
+import 'package:DGR_alarmes/controllers/device_controller.dart';
+import 'package:DGR_alarmes/controllers/log_controller.dart';
+import 'package:DGR_alarmes/controllers/user_device_controller.dart';
 import 'package:DGR_alarmes/models/device.dart';
 import 'package:DGR_alarmes/models/log.dart';
 import 'package:DGR_alarmes/models/user_device.dart';

@@ -1,4 +1,4 @@
-import 'package:DGR_alarmes/controller/log_controller.dart';
+import 'package:DGR_alarmes/controllers/log_controller.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

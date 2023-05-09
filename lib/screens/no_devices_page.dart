@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
-import '../controller/bluetooth_controller.dart';
+import '../services/bluetooth_controller.dart';
 
 class NoDevicesPage extends StatefulWidget {
   const NoDevicesPage({super.key});

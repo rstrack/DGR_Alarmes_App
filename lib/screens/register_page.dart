@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 
-import 'package:DGR_alarmes/controller/user_controller.dart';
+import 'package:DGR_alarmes/controllers/user_controller.dart';
 import 'package:DGR_alarmes/models/user.dart';
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
