@@ -8,7 +8,7 @@ class BluetoothController {
 
   StreamSubscription<BluetoothDiscoveryResult>? _streamSubscription;
 
-  StreamController<List<BluetoothDiscoveryResult>> _streamController =
+  final StreamController<List<BluetoothDiscoveryResult>> _streamController =
       StreamController.broadcast();
 
   List<BluetoothDiscoveryResult> listScanResults = [];
@@ -28,10 +28,11 @@ class BluetoothController {
           flutterBluetoothSerial.startDiscovery().listen((event) {
         final existingIndex = listScanResults.indexWhere(
             (element) => element.device.address == event.device.address);
-        if (existingIndex >= 0)
+        if (existingIndex >= 0) {
           listScanResults[existingIndex] = event;
-        else
+        } else {
           listScanResults.add(event);
+        }
       });
 
       // Quando a descoberta Bluetooth terminar, envie a lista de resultados através do fluxo
