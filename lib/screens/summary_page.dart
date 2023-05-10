@@ -30,13 +30,48 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                   padding: EdgeInsets.all(16.0),
                   child: AlarmStatus(),
                 ),
-                const Divider(
-                  thickness: 2,
+                const SizedBox(
+                  height: 10,
                 ),
+                // Container(color: Colors.grey[300], height: 2),
                 const AlarmActionButton(),
                 const SizedBox(
                   height: 20,
                 ),
+                // Container(color: Colors.grey[300], height: 2),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Histórico recente',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            '/events_page',
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Text('Ver histórico completo'),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.chevron_right,
+                              size: 24.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(color: Colors.grey[300], height: 2),
                 log.when(
                   data: (data) => Expanded(
                       child: ListView.builder(

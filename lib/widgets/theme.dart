@@ -5,8 +5,8 @@ ThemeData lightTheme = ThemeData(
 );
 
 ThemeData darkTheme = ThemeData(
-  primarySwatch: Colors.indigo,
-  brightness: Brightness.dark,
-  primaryColor: Colors.indigo,
-  appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo),
-);
+    primarySwatch: Colors.indigo,
+    brightness: Brightness.dark,
+    primaryColor: Colors.indigo,
+    appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo),
+    scaffoldBackgroundColor: Colors.grey[800]);
