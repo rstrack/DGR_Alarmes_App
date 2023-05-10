@@ -16,6 +16,7 @@ class MenuDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var isDarkMode = ref.watch(themeProvider);
+    final device = ref.watch(deviceProvider);
     final user = ref.watch(userProvider);
     return Drawer(
       child: Column(
@@ -41,7 +42,7 @@ class MenuDrawer extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: const DeviceDropdownButton(),
           ),
-          ListTile(
+          device.userDevices.isNotEmpty ? ListTile(
             leading: const Icon(Icons.center_focus_strong, color: Colors.white),
             title: const Text(
               'Dispositivos',
@@ -57,8 +58,8 @@ class MenuDrawer extends ConsumerWidget {
                 '/devices_page',
               );
             },
-          ),
-          ListTile(
+          ) : const SizedBox(),
+          device.userDevices.isNotEmpty ? ListTile(
             leading: const Icon(Icons.event, color: Colors.white),
             title: const Text(
               'Eventos',
@@ -74,7 +75,7 @@ class MenuDrawer extends ConsumerWidget {
                 '/events_page',
               );
             },
-          ),
+          ) : const SizedBox(),
           const Expanded(child: SizedBox()),
           Align(
             alignment: FractionalOffset.bottomCenter,

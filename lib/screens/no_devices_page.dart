@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:DGR_alarmes/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';

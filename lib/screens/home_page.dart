@@ -26,7 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
         drawer: MenuDrawer(),
         body: device.isLoading
-            ? const CircularProgressIndicator()
+            ? const Center(child: CircularProgressIndicator())
             : device.userDevices.isNotEmpty
                 ? const SummaryPage()
                 : const NoDevicesPage());

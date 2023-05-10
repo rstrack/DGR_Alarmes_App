@@ -35,13 +35,7 @@ class _DevicesPageState extends ConsumerState<DevicesPage> {
                             icon: const SizedBox(
                                 width: 40,
                                 height: 50,
-                                child: Icon(Icons.devices)
-                                // Icon(Icons.devices_other_rounded)
-                                // CircleAvatar(
-                                //   backgroundImage:
-                                //       AssetImage('assets/casa_dgr.png'),
-                                // ),
-                                ),
+                                child: Icon(Icons.devices)),
                             label: Text(userDevice.nickname),
                             onPressed: () {
                               ref

@@ -15,7 +15,7 @@ class DeviceNotifier extends ChangeNotifier {
   List<UserDevice> userDevices = [];
   String? macAddress;
   Device? device;
-  bool isLoading = true;
+  bool isLoading = false;
   StreamSubscription<DatabaseEvent>? _subscription;
 
   DeviceNotifier() {
