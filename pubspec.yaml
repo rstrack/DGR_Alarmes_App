@@ -34,6 +34,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  bluetooth_enable_fork: ^0.1.6
   cupertino_icons: ^1.0.2
   firebase_core: ^2.8.0
   firebase_auth: ^4.3.0
@@ -154,7 +155,7 @@ flutter_native_splash:
     # 640 pixels in diameter.
     # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
     # 768 pixels in diameter.
-    image: assets/logo.png
+    image: assets/logo_rounded.png
 
     # Splash screen background color.
     color: "#FFFFFF"

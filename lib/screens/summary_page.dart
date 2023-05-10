@@ -1,4 +1,3 @@
-import 'package:DGR_alarmes/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +21,6 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
     final log = ref.watch(logProvider(10));
     // print(device.macAddress);
     return Scaffold(
-      drawer: MenuDrawer(),
       body: device.device != null
           ? Column(
               children: [

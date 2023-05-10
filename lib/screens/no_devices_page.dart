@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../services/bluetooth_controller.dart';
 
@@ -20,31 +22,96 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Wrap(
           runSpacing: 20,
           children: [
-            Text(
-                "Você não possui nenhum dispositivo vinculado. \nSe já adquiriu seu dispositivo, ligue-o e configure-o.",
-                style: Theme.of(context).textTheme.titleMedium),
+            RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "Você não possui nenhum ",
+                    ),
+                    TextSpan(
+                      text: "dispositivo ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
+                    TextSpan(
+                      text: "vinculado. Se já adquiriu seu ",
+                    ),
+                    TextSpan(
+                      text: "alarme ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ", ligue-o e configure-o.",
+                    ),
+                  ]),
+            ),
             Center(
               child: FilledButton(
                   onPressed: () async {
+                    var result = await BluetoothEnable.enableBluetooth;
                     bool? isOn = await bluetoothController
                         .flutterBluetoothSerial.isEnabled;
-                    if (isOn!) {
+                    var scanPermission =
+                        await Permission.bluetoothScan.request();
+                    if (isOn! &&
+                        result == "true" &&
+                        scanPermission == PermissionStatus.granted) {
                       bluetoothController.startScanForDevices();
                       await _showDevicesListModal();
                     } else {
-                      alertBluetoothIsNotOn();
+                      await FlutterBluetoothSerial.instance.requestEnable();
                     }
                   },
                   // onPressed: () => Navigator.pushNamed(context, '/bluetooth_page'),
                   child: const Text("Configurar novo alarme")),
             ),
-            Text(
-                "Se já configurou a conexão de seu dispositivo, leia seu QR code para vinculá-lo a sua conta.",
-                style: Theme.of(context).textTheme.titleMedium),
+            RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "Se já configurou a conexão de seu ",
+                    ),
+                    TextSpan(
+                      text: "alarme ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ", leia seu ",
+                    ),
+                    TextSpan(
+                      text: "QR code ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
+                    TextSpan(
+                      text: "para vinculá-lo a sua conta.",
+                    ),
+                  ]),
+            ),
             Center(
                 child: FilledButton(
                     onPressed: () async {
