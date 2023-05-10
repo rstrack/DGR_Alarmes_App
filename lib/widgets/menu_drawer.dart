@@ -37,45 +37,49 @@ class MenuDrawer extends ConsumerWidget {
               child: Icon(Icons.person),
             ),
           ),
-          Container(
-            color: Colors.indigo,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: const DeviceDropdownButton(),
-          ),
-          device.userDevices.isNotEmpty ? ListTile(
-            leading: const Icon(Icons.center_focus_strong, color: Colors.white),
-            title: const Text(
-              'Dispositivos',
-              style: TextStyle(color: Colors.white),
+          if (device.userDevices.isNotEmpty) ...[
+            Container(
+              color: Colors.indigo,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: const DeviceDropdownButton(),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-            // minLeadingWidth: 0,
-            horizontalTitleGap: 0,
-            tileColor: Colors.indigo,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed(
-                '/devices_page',
-              );
-            },
-          ) : const SizedBox(),
-          device.userDevices.isNotEmpty ? ListTile(
-            leading: const Icon(Icons.event, color: Colors.white),
-            title: const Text(
-              'Eventos',
-              style: TextStyle(color: Colors.white),
+            ListTile(
+              leading:
+                  const Icon(Icons.center_focus_strong, color: Colors.white),
+              title: const Text(
+                'Dispositivos',
+                style: TextStyle(color: Colors.white),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              // minLeadingWidth: 0,
+              horizontalTitleGap: 0,
+              tileColor: Colors.indigo,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(
+                  '/devices_page',
+                );
+              },
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-            // minLeadingWidth: 0,
-            horizontalTitleGap: 0,
-            tileColor: Colors.indigo,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed(
-                '/events_page',
-              );
-            },
-          ) : const SizedBox(),
+            ListTile(
+              leading:
+                  const Icon(Icons.center_focus_strong, color: Colors.white),
+              title: const Text(
+                'Dispositivos',
+                style: TextStyle(color: Colors.white),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              // minLeadingWidth: 0,
+              horizontalTitleGap: 0,
+              tileColor: Colors.indigo,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(
+                  '/devices_page',
+                );
+              },
+            )
+          ],
           const Expanded(child: SizedBox()),
           Align(
             alignment: FractionalOffset.bottomCenter,
