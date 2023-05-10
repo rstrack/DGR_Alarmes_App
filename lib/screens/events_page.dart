@@ -18,26 +18,14 @@ class _EventsPageState extends ConsumerState<EventsPage> {
   @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
-    final log = ref.watch(logProvider(30));
-
-    List<Log> filteredData = log.when(
-      data: (data) {
-        if (_select == 9) {
-          return data;
-        } else {
-          // print(data.first.type);
-          return data.where((item) => item.type == _select).toList();
-        }
-      },
-      error: (error, stackTrace) => const [],
-      loading: () => const [],
-    );
+    var log = ref.watch(logProvider(30));
+    List<Log> filteredData;
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
         title: Text(
-          "Eventos do ${device.userDevices.firstWhere((element) => element.idDevice == device.macAddress).nickname}",
+          "Histórico - ${device.userDevices.firstWhere((element) => element.idDevice == device.macAddress).nickname}",
         ),
         actions: [
           PopupMenuButton<int>(
@@ -71,47 +59,74 @@ class _EventsPageState extends ConsumerState<EventsPage> {
       ),
       drawer: MenuDrawer(),
       body: device.device != null
-          ? ListView.builder(
-              itemCount: filteredData.length,
-              itemBuilder: (context, index) {
-                final item = filteredData[index];
-                final typeText = item.type == 0
-                    ? "Alarme ativado"
-                    : item.type == 1
-                        ? "Alarme desativado"
-                        : "Alarme disparado";
-                final icon = item.type == 0
-                    ? const Icon(
-                        Icons.power_settings_new,
-                        color: Colors.green,
-                      )
-                    : item.type == 1
-                        ? const Icon(
-                            Icons.power_settings_new,
-                            color: Colors.blueGrey,
-                          )
-                        : const Icon(
-                            Icons.notification_important,
-                            color: Colors.red,
-                          );
-                final time =
-                    DateTime.fromMillisecondsSinceEpoch(item.time * 1000);
-                final formattedTime =
-                    DateFormat('dd/MM/yyyy HH:mm').format(time);
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.grey[300]!),
-                      bottom: BorderSide(color: Colors.grey[300]!),
-                    ),
-                  ),
-                  child: ListTile(
-                    leading: icon,
-                    title: Text(typeText),
-                    subtitle: Text(formattedTime),
+          ? log.when(
+              data: (data) {
+                if (_select == 9) {
+                  filteredData = data;
+                } else {
+                  filteredData =
+                      data.where((item) => item.type == _select).toList();
+                }
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    log = await ref.refresh(logProvider(30));
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: filteredData.length,
+                          itemBuilder: (context, index) {
+                            if (filteredData.isNotEmpty) {
+                              final item = filteredData[index];
+                              final typeText = item.type == 0
+                                  ? "Alarme ativado"
+                                  : item.type == 1
+                                      ? "Alarme desativado"
+                                      : "Alarme disparado";
+                              final icon = item.type == 0
+                                  ? const Icon(
+                                      Icons.power_settings_new,
+                                      color: Colors.green,
+                                    )
+                                  : item.type == 1
+                                      ? const Icon(
+                                          Icons.power_settings_new,
+                                          color: Colors.blueGrey,
+                                        )
+                                      : const Icon(
+                                          Icons.notification_important,
+                                          color: Colors.red,
+                                        );
+                              final time = DateTime.fromMillisecondsSinceEpoch(
+                                  item.time * 1000);
+                              final formattedTime =
+                                  DateFormat('dd/MM/yyyy HH:mm').format(time);
+                              return Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(color: Colors.grey[300]!),
+                                    bottom:
+                                        BorderSide(color: Colors.grey[300]!),
+                                  ),
+                                ),
+                                child: ListTile(
+                                  leading: icon,
+                                  title: Text(typeText),
+                                  subtitle: Text(formattedTime),
+                                ),
+                              );
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
+              error: (error, stackTrace) => const Text("Erro"),
+              loading: () => const Center(child: CircularProgressIndicator()),
             )
           : const Center(
               child: CircularProgressIndicator(),
