@@ -1,6 +1,7 @@
 import 'package:DGR_alarmes/models/log.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
 import 'package:DGR_alarmes/providers/log_provider.dart';
+import 'package:DGR_alarmes/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -34,6 +35,7 @@ class _EventsPageState extends ConsumerState<EventsPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         title: Text(
           "Eventos do ${device.userDevices.firstWhere((element) => element.idDevice == device.macAddress).nickname}",
         ),
@@ -67,6 +69,7 @@ class _EventsPageState extends ConsumerState<EventsPage> {
           ),
         ],
       ),
+      drawer: MenuDrawer(),
       body: device.device != null
           ? ListView.builder(
               itemCount: filteredData.length,

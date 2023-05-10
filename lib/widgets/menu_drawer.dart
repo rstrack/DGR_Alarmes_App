@@ -1,6 +1,5 @@
 import 'package:DGR_alarmes/providers/auth_provider.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
-import 'package:DGR_alarmes/providers/log_provider.dart';
 import 'package:DGR_alarmes/providers/user_provider.dart';
 import 'package:DGR_alarmes/providers/theme_provider.dart';
 import 'package:DGR_alarmes/widgets/device_dropdown_button.dart';
@@ -53,9 +52,9 @@ class MenuDrawer extends ConsumerWidget {
             horizontalTitleGap: 0,
             tileColor: Colors.indigo,
             onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(
                 '/devices_page',
-                (route) => false,
               );
             },
           ),
@@ -70,9 +69,9 @@ class MenuDrawer extends ConsumerWidget {
             horizontalTitleGap: 0,
             tileColor: Colors.indigo,
             onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(
                 '/events_page',
-                (route) => false,
               );
             },
           ),

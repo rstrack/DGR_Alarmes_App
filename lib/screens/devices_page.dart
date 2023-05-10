@@ -1,7 +1,6 @@
 import 'package:DGR_alarmes/providers/device_provider.dart';
+import 'package:DGR_alarmes/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DevicesPage extends ConsumerStatefulWidget {
@@ -19,6 +18,7 @@ class _DevicesPageState extends ConsumerState<DevicesPage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Dispositivos")),
+      drawer: MenuDrawer(),
       body: Column(
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,

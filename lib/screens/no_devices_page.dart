@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:DGR_alarmes/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -18,42 +19,44 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Wrap(
-        runSpacing: 20,
-        children: [
-          Text(
-              "Você não possui nenhum dispositivo vinculado. \nSe já adquiriu seu dispositivo, ligue-o e configure-o.",
-              style: Theme.of(context).textTheme.titleMedium),
-          Center(
-            child: FilledButton(
-                onPressed: () async {
-                  bool? isOn = await bluetoothController
-                      .flutterBluetoothSerial.isEnabled;
-                  if (isOn!) {
-                    bluetoothController.startScanForDevices();
-                    await _showDevicesListModal();
-                  } else {
-                    alertBluetoothIsNotOn();
-                  }
-                },
-                // onPressed: () => Navigator.pushNamed(context, '/bluetooth_page'),
-                child: const Text("Configurar novo alarme")),
-          ),
-          Text(
-              "Se já configurou a conexão de seu dispositivo, leia seu QR code para vinculá-lo a sua conta.",
-              style: Theme.of(context).textTheme.titleMedium),
-          Center(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Wrap(
+          runSpacing: 20,
+          children: [
+            Text(
+                "Você não possui nenhum dispositivo vinculado. \nSe já adquiriu seu dispositivo, ligue-o e configure-o.",
+                style: Theme.of(context).textTheme.titleMedium),
+            Center(
               child: FilledButton(
                   onPressed: () async {
-                    String barcode = await FlutterBarcodeScanner.scanBarcode(
-                        "#FFFFFF", "Cancelar", false, ScanMode.QR);
-                    print("QR CODE: $barcode");
-                    //CRIAR DIPOSITIVO
+                    bool? isOn = await bluetoothController
+                        .flutterBluetoothSerial.isEnabled;
+                    if (isOn!) {
+                      bluetoothController.startScanForDevices();
+                      await _showDevicesListModal();
+                    } else {
+                      alertBluetoothIsNotOn();
+                    }
                   },
-                  child: const Text("Ler QR Code"))),
-        ],
+                  // onPressed: () => Navigator.pushNamed(context, '/bluetooth_page'),
+                  child: const Text("Configurar novo alarme")),
+            ),
+            Text(
+                "Se já configurou a conexão de seu dispositivo, leia seu QR code para vinculá-lo a sua conta.",
+                style: Theme.of(context).textTheme.titleMedium),
+            Center(
+                child: FilledButton(
+                    onPressed: () async {
+                      String barcode = await FlutterBarcodeScanner.scanBarcode(
+                          "#FFFFFF", "Cancelar", false, ScanMode.QR);
+                      print("QR CODE: $barcode");
+                      //CRIAR DIPOSITIVO
+                    },
+                    child: const Text("Ler QR Code"))),
+          ],
+        ),
       ),
     );
   }
