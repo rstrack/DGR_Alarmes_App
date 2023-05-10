@@ -65,7 +65,7 @@ class MenuDrawer extends ConsumerWidget {
               leading:
                   const Icon(Icons.center_focus_strong, color: Colors.white),
               title: const Text(
-                'Dispositivos',
+                'Histórico',
                 style: TextStyle(color: Colors.white),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -75,7 +75,7 @@ class MenuDrawer extends ConsumerWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushNamed(
-                  '/devices_page',
+                  '/events_page',
                 );
               },
             )
