@@ -11,7 +11,6 @@ final logProvider = FutureProvider.family<List<Log>, int>((ref, limit) async {
   final device = deviceNotifier.device;
   var user = userStream.value;
   if (device != null && user != null) {
-    await Future.delayed(const Duration(seconds: 1));
     final response =
         await LogController.instance.getLogs(device.macAddress, limit: limit);
     return response;

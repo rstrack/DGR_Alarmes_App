@@ -118,7 +118,10 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                     },
                   )),
                   error: (error, stackTrace) => const Text(""),
-                  loading: () => const CircularProgressIndicator(),
+                  loading: () => const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
               ],
             )

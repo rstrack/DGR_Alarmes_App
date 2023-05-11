@@ -132,7 +132,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           }
                         },
                         child: _isLoading
-                            ? const CircularProgressIndicator()
+                            ? const CircularProgressIndicator.adaptive(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white))
                             : const Text('Entrar'),
                       ),
                       const SizedBox(height: 16.0),

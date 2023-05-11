@@ -16,6 +16,7 @@ class DeviceNotifier extends ChangeNotifier {
   String? macAddress;
   Device? device;
   bool isLoading = false;
+  bool _isListening = true;
   StreamSubscription<DatabaseEvent>? _subscription;
 
   DeviceNotifier() {
@@ -73,12 +74,16 @@ class DeviceNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  setListening(bool isListening) {
+    _isListening = isListening;
+  }
+
   listenDevice() {
     if (macAddress != null) {
       final ref = FirebaseDatabase.instance.ref();
       _subscription =
           ref.child('device/$macAddress').onChildChanged.listen((event) {
-        if (event.snapshot.value != null) {
+        if (event.snapshot.value != null && _isListening == true) {
           updateDevice(
               event.snapshot.key as String, event.snapshot.value as bool);
         }
