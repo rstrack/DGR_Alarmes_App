@@ -17,7 +17,7 @@ class _AlarmActionButtonState extends ConsumerState<AlarmActionButton> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceNotifier = ref.watch(deviceProvider);
+    var deviceNotifier = ref.watch(deviceProvider);
     final buttonText = deviceNotifier.device!.triggered
         ? 'Interromper'
         : deviceNotifier.device!.active
@@ -35,7 +35,11 @@ class _AlarmActionButtonState extends ConsumerState<AlarmActionButton> {
             ref.read(deviceProvider.notifier).setListening(false);
             bool response = await DeviceController.instance
                 .changeDeviceState(deviceNotifier.device!);
-            ref.read(deviceProvider.notifier).setListening(false);
+            ref.read(deviceProvider.notifier).setListening(true);
+            if (response == true) {
+              deviceNotifier.cancelListen();
+              deviceNotifier = ref.refresh(deviceProvider);
+            }
             setState(() {
               _isLoading = false;
             });

@@ -17,6 +17,7 @@ class DeviceController {
 
   Future<bool> changeDeviceState(Device device) async {
     double unixTime = DateTime.now().millisecondsSinceEpoch / 1000;
+    print(unixTime);
 
     await _ref.child('device/${device.macAddress}/active').set(!device.active);
 
@@ -27,6 +28,7 @@ class DeviceController {
       if (event.snapshot.value != null) {
         if (completer.isCompleted == false &&
             (event.snapshot.value as Map)['time'] > unixTime) {
+          print('completou com true');
           completer.complete(true);
         }
       }
@@ -36,12 +38,14 @@ class DeviceController {
     Timer(const Duration(seconds: 5), () async {
       if (completer.isCompleted == false) {
         await stream.cancel();
-        _ref.child('device/${device.macAddress}/active').set(!device.active);
+        _ref.child('device/${device.macAddress}/active').set(device.active);
+        print('completou com false');
         completer.complete(false);
       }
     });
 
     bool logAdded = await completer.future;
+    print(logAdded);
 
     if (logAdded) {
       await stream.cancel();
