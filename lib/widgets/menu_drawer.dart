@@ -44,6 +44,22 @@ class MenuDrawer extends ConsumerWidget {
               child: const DeviceDropdownButton(),
             ),
             ListTile(
+              leading: const Icon(Icons.home, color: Colors.indigo),
+              title: const Text(
+                'Tela inicial',
+                style: TextStyle(color: Colors.indigo),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              // minLeadingWidth: 0,
+              horizontalTitleGap: 0,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(
+                  '/',
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.device_hub, color: Colors.indigo),
               title: const Text(
                 'Dispositivos',
