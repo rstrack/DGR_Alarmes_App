@@ -44,16 +44,14 @@ class MenuDrawer extends ConsumerWidget {
               child: const DeviceDropdownButton(),
             ),
             ListTile(
-              leading:
-                  const Icon(Icons.center_focus_strong, color: Colors.white),
+              leading: const Icon(Icons.device_hub, color: Colors.indigo),
               title: const Text(
                 'Dispositivos',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.indigo),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               // minLeadingWidth: 0,
               horizontalTitleGap: 0,
-              tileColor: Colors.indigo,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushNamed(
@@ -63,15 +61,14 @@ class MenuDrawer extends ConsumerWidget {
             ),
             ListTile(
               leading:
-                  const Icon(Icons.center_focus_strong, color: Colors.white),
+                  const Icon(Icons.summarize_outlined, color: Colors.indigo),
               title: const Text(
                 'Histórico',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.indigo),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               // minLeadingWidth: 0,
               horizontalTitleGap: 0,
-              tileColor: Colors.indigo,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushNamed(

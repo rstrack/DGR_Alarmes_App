@@ -12,6 +12,7 @@ class DeviceDropdownButton extends ConsumerWidget {
       children: [
         DropdownButton<String>(
           value: device.macAddress,
+          iconEnabledColor: Colors.white,
           selectedItemBuilder: (context) {
             return device.userDevices.map((userDevice) {
               return Center(
