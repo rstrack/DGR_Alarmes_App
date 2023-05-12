@@ -15,12 +15,13 @@ class UpdateDeviceForm extends ConsumerStatefulWidget {
 
 class _UpdateDeviceFormState extends ConsumerState<UpdateDeviceForm> {
   final _formKey = GlobalKey<FormState>();
-  String nickname = "";
+  late TextEditingController _nicknameController;
 
   @override
   void initState() {
-    nickname = widget.userDevice.nickname;
     super.initState();
+    _nicknameController =
+        TextEditingController(text: widget.userDevice.nickname);
   }
 
   @override
@@ -41,6 +42,7 @@ class _UpdateDeviceFormState extends ConsumerState<UpdateDeviceForm> {
                       fontSize: 18,
                       color: Colors.indigo)),
               TextFormField(
+                controller: _nicknameController,
                 decoration: const InputDecoration(hintText: "Nome do alarme"),
                 maxLength: 20,
                 validator: (value) {
@@ -49,18 +51,14 @@ class _UpdateDeviceFormState extends ConsumerState<UpdateDeviceForm> {
                   }
                   return null;
                 },
-                onSaved: (newValue) {
-                  if (newValue != null) {
-                    nickname = newValue;
-                  }
-                },
               ),
               FilledButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      await UserDeviceController.instance
-                          .updateUserDevice(widget.userDevice.id, nickname);
+                      await UserDeviceController.instance.updateUserDevice(
+                          widget.userDevice.id,
+                          _nicknameController.text.trim());
                       if (mounted) {
                         Navigator.pop(context);
                         showCustomSnackbar(
