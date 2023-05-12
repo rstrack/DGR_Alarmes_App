@@ -11,16 +11,16 @@ class UserDevice {
 
   factory UserDevice.fromJson(Map json) {
     return UserDevice(
-      idUser: json['idUser'],
-      idDevice: json['idDevice'],
+      idUser: json['user'],
+      idDevice: json['device'],
       nickname: json['nickname'],
     );
   }
 
   Map toJson() {
     return {
-      'idUser': idUser,
-      'idDevice': idDevice,
+      'user': idUser,
+      'device': idDevice,
       'nickname': nickname,
     };
   }

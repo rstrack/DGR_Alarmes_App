@@ -8,10 +8,19 @@ class UserDeviceController {
 
   List<UserDevice> userDevices = [];
 
+  Future<void> createUserDevice(String macAddress, String nickname) async {
+    final newKey = _ref.child('userdevice').push().key;
+    await _ref.child('userdevice/$newKey').set({
+      'user': _auth.currentUser!.uid,
+      'device': macAddress,
+      'nickname': nickname
+    });
+  }
+
   Future<List<UserDevice>> listDevices() async {
     DatabaseEvent event = await _ref
         .child('userdevice')
-        .orderByChild("idUser")
+        .orderByChild("user")
         .equalTo(_auth.currentUser!.uid)
         .once();
 
