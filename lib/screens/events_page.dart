@@ -58,20 +58,20 @@ class _EventsPageState extends ConsumerState<EventsPage> {
         ],
       ),
       drawer: MenuDrawer(),
-      body: device.device != null
-          ? log.when(
-              data: (data) {
-                if (_select == 9) {
-                  filteredData = data;
-                } else {
-                  filteredData =
-                      data.where((item) => item.type == _select).toList();
-                }
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    log = await ref.refresh(logProvider(30));
-                  },
-                  child: Column(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          log = await ref.refresh(logProvider(30));
+        },
+        child: device.device != null
+            ? log.when(
+                data: (data) {
+                  if (_select == 9) {
+                    filteredData = data;
+                  } else {
+                    filteredData =
+                        data.where((item) => item.type == _select).toList();
+                  }
+                  return Column(
                     children: [
                       Expanded(
                         child: ListView.builder(
@@ -122,15 +122,15 @@ class _EventsPageState extends ConsumerState<EventsPage> {
                         ),
                       ),
                     ],
-                  ),
-                );
-              },
-              error: (error, stackTrace) => const Text("Erro"),
-              loading: () => const Center(child: CircularProgressIndicator()),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
+                  );
+                },
+                error: (error, stackTrace) => const Text("Erro"),
+                loading: () => const Center(child: CircularProgressIndicator()),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ),
     );
   }
 }
