@@ -1,21 +1,24 @@
 import 'dart:async';
 
+import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
+import 'package:DGR_alarmes/widgets/new_device_form.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../services/bluetooth_controller.dart';
 
-class NoDevicesPage extends StatefulWidget {
+class NoDevicesPage extends ConsumerStatefulWidget {
   const NoDevicesPage({super.key});
 
   @override
-  State<NoDevicesPage> createState() => _NoDevicesPageState();
+  ConsumerState<NoDevicesPage> createState() => _NoDevicesPageState();
 }
 
-class _NoDevicesPageState extends State<NoDevicesPage> {
+class _NoDevicesPageState extends ConsumerState<NoDevicesPage> {
   BluetoothController bluetoothController = BluetoothController();
 
   @override
@@ -115,10 +118,25 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
             Center(
                 child: FilledButton(
                     onPressed: () async {
-                      String barcode = await FlutterBarcodeScanner.scanBarcode(
+                      String qrcode = await FlutterBarcodeScanner.scanBarcode(
                           "#FFFFFF", "Cancelar", false, ScanMode.QR);
-                      print("QR CODE: $barcode");
-                      //CRIAR DIPOSITIVO
+                      //print("QR CODE: $qrcode");
+                      RegExp regex =
+                          RegExp(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$');
+                      if (regex.hasMatch(qrcode) && mounted) {
+                        showModalBottomSheet<void>(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) {
+                              return NewDeviceForm(macAddress: qrcode);
+                            });
+                      } else {
+                        if (mounted) {
+                          showCustomSnackbar(
+                              context: context, text: "QR Code inválido");
+                        }
+                      }
+                      //CRIAR DISPOSITIVO
                     },
                     child: const Text("Ler QR Code"))),
           ],
@@ -140,7 +158,7 @@ class _NoDevicesPageState extends State<NoDevicesPage> {
               width: double.maxFinite,
               child: StreamBuilder<List<BluetoothDiscoveryResult>>(
                 stream: bluetoothController.results,
-                initialData: [],
+                initialData: const [],
                 builder: (BuildContext context,
                     AsyncSnapshot<List<BluetoothDiscoveryResult>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting ||
