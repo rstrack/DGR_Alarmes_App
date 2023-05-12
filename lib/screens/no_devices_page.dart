@@ -121,22 +121,23 @@ class _NoDevicesPageState extends ConsumerState<NoDevicesPage> {
                       String qrcode = await FlutterBarcodeScanner.scanBarcode(
                           "#FFFFFF", "Cancelar", false, ScanMode.QR);
                       //print("QR CODE: $qrcode");
-                      RegExp regex =
-                          RegExp(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$');
-                      if (regex.hasMatch(qrcode) && mounted) {
-                        showModalBottomSheet<void>(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return NewDeviceForm(macAddress: qrcode);
-                            });
-                      } else {
-                        if (mounted) {
-                          showCustomSnackbar(
-                              context: context, text: "QR Code inválido");
+                      if (qrcode != "-1") {
+                        RegExp regex = RegExp(
+                            r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$');
+                        if (regex.hasMatch(qrcode) && mounted) {
+                          showModalBottomSheet<void>(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return NewDeviceForm(macAddress: qrcode);
+                              });
+                        } else {
+                          if (mounted) {
+                            showCustomSnackbar(
+                                context: context, text: "QR Code inválido");
+                          }
                         }
                       }
-                      //CRIAR DISPOSITIVO
                     },
                     child: const Text("Ler QR Code"))),
           ],
