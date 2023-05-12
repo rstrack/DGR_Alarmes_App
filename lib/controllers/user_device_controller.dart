@@ -17,6 +17,14 @@ class UserDeviceController {
     });
   }
 
+  Future<void> updateUserDevice(String id, String nickname) async {
+    await _ref.child('userdevice/$id').update({'nickname': nickname});
+  }
+
+  Future<void> deleteUserDevice(String id) async {
+    await _ref.child('userdevice/$id').remove();
+  }
+
   Future<List<UserDevice>> listDevices() async {
     DatabaseEvent event = await _ref
         .child('userdevice')
@@ -28,7 +36,7 @@ class UserDeviceController {
     userDevices = [];
     if (data != null) {
       (data as Map).forEach((key, value) {
-        userDevices.add(UserDevice.fromJson(value));
+        userDevices.add(UserDevice.fromJson(key, value));
       });
     }
     return userDevices;
