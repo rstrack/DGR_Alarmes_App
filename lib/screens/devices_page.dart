@@ -3,7 +3,7 @@ import 'package:DGR_alarmes/controllers/user_device_controller.dart';
 import 'package:DGR_alarmes/models/device.dart';
 import 'package:DGR_alarmes/models/user_device.dart';
 import 'package:DGR_alarmes/providers/device_provider.dart';
-import 'package:DGR_alarmes/widgets/confirmation_bottom_sheet.dart';
+import 'package:DGR_alarmes/widgets/confirmation_dialog.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:DGR_alarmes/widgets/menu_drawer.dart';
 import 'package:DGR_alarmes/widgets/new_device_form.dart';
@@ -92,11 +92,11 @@ class _DevicesPageState extends ConsumerState<DevicesPage> {
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                showModalBottomSheet<void>(
+                                showDialog<void>(
                                     context: context,
-                                    isScrollControlled: true,
                                     builder: (context) {
-                                      return ConfirmationBottomSheet(
+                                      return ConfirmationDialog(
+                                        text: "Tem certeza que deseja excluir?",
                                         onConfirming: () async {
                                           await UserDeviceController.instance
                                               .deleteUserDevice(
