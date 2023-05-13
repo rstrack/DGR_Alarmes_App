@@ -25,7 +25,7 @@ class UserDeviceController {
     await _ref.child('userdevice/$id').remove();
   }
 
-  Future<List<UserDevice>> listDevices() async {
+  Future<List<UserDevice>> listUserDevices() async {
     DatabaseEvent event = await _ref
         .child('userdevice')
         .orderByChild("user")

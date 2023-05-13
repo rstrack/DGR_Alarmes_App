@@ -24,17 +24,17 @@ class DeviceNotifier extends ChangeNotifier {
   }
 
   void _init() async {
-    await listDevices();
+    await listUserDevices();
     if (userDevices.isNotEmpty) {
       await setMacAddress(userDevices[0].idDevice);
       listenDevice();
     }
   }
 
-  listDevices() async {
+  listUserDevices() async {
     isLoading = true;
     notifyListeners();
-    userDevices = await UserDeviceController.instance.listDevices();
+    userDevices = await UserDeviceController.instance.listUserDevices();
     isLoading = false;
     notifyListeners();
   }
