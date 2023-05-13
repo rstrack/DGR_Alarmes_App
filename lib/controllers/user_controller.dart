@@ -10,5 +10,9 @@ class UserController {
     await _ref.child("user/${user.id}").set(user.toJson());
   }
 
+  Future<void> updateUser(User user) async {
+    await _ref.child("user/${user.id}").set(user.toJson());
+  }
+
   static UserController instance = UserController();
 }

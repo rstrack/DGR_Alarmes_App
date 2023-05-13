@@ -52,14 +52,19 @@ class _NewDeviceFormState extends ConsumerState<NewDeviceForm> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      await UserDeviceController.instance
+                      bool response = await UserDeviceController.instance
                           .createUserDevice(widget.macAddress, nickname);
-                      if (mounted) {
+                      if (response == true && mounted) {
                         Navigator.pop(context);
                         showCustomSnackbar(
                             context: context,
                             text: 'Dispositivo adicionado com sucesso!');
                         ref.invalidate(deviceProvider);
+                      } else {
+                        Navigator.pop(context);
+                        showCustomSnackbar(
+                            context: context,
+                            text: 'Dispositivo já vinculado ao usuário!');
                       }
                     }
                   },

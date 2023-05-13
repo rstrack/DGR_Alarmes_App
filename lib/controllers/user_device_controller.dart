@@ -8,13 +8,28 @@ class UserDeviceController {
 
   List<UserDevice> userDevices = [];
 
-  Future<void> createUserDevice(String macAddress, String nickname) async {
+  Future<bool> createUserDevice(String macAddress, String nickname) async {
+    DatabaseEvent event = await _ref
+        .child('userdevice')
+        .orderByChild("user")
+        .equalTo(_auth.currentUser!.uid)
+        .once();
+
+    final data = event.snapshot.value;
+    if (data != null) {
+      for (Map value in (data as Map).values) {
+        if (value['device'] == macAddress) {
+          return false;
+        }
+      }
+    }
     final newKey = _ref.child('userdevice').push().key;
     await _ref.child('userdevice/$newKey').set({
       'user': _auth.currentUser!.uid,
       'device': macAddress,
       'nickname': nickname
     });
+    return true;
   }
 
   Future<void> updateUserDevice(String id, String nickname) async {
