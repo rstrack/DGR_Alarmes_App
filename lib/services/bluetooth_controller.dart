@@ -19,26 +19,24 @@ class BluetoothController {
   FlutterBluetoothSerial flutterBluetoothSerial =
       FlutterBluetoothSerial.instance;
 
-  startScanForDevices() async {
+  void startScanForDevices() async {
     try {
       listScanResults.clear();
-
+      if (_streamSubscription != null) {
+        await _streamSubscription!.cancel();
+        _streamSubscription = null;
+      }
       // Inicia a busca por dispositivos
       _streamSubscription =
           flutterBluetoothSerial.startDiscovery().listen((event) {
-        final existingIndex = listScanResults.indexWhere(
-            (element) => element.device.address == event.device.address);
-        if (existingIndex >= 0) {
-          listScanResults[existingIndex] = event;
-        } else {
-          listScanResults.add(event);
-        }
+        listScanResults.add(event);
       });
 
       // Quando a descoberta Bluetooth terminar, envie a lista de resultados através do fluxo
       _streamSubscription?.onDone(() {
         _streamController.add(listScanResults);
-        _streamController.close();
+        //_streamController.close();
+        _streamSubscription!.cancel();
       });
     } catch (e) {
       print(e);
@@ -49,6 +47,10 @@ class BluetoothController {
     try {
       // Para a busca por dispositivos
       flutterBluetoothSerial.cancelDiscovery();
+      if (_streamSubscription != null) {
+        await _streamSubscription!.cancel();
+        _streamSubscription = null;
+      }
     } catch (e) {
       print(e);
     }
@@ -86,4 +88,6 @@ class BluetoothController {
       print(e);
     }
   }
+
+  static final instance = BluetoothController();
 }

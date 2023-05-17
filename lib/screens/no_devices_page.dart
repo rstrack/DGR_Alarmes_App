@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'package:DGR_alarmes/widgets/bluetooth_devices_dialog.dart';
 import 'package:DGR_alarmes/widgets/custom_snack_bar.dart';
 import 'package:DGR_alarmes/widgets/new_device_form.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
@@ -19,8 +18,6 @@ class NoDevicesPage extends ConsumerStatefulWidget {
 }
 
 class _NoDevicesPageState extends ConsumerState<NoDevicesPage> {
-  BluetoothController bluetoothController = BluetoothController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,15 +63,22 @@ class _NoDevicesPageState extends ConsumerState<NoDevicesPage> {
               child: FilledButton(
                   onPressed: () async {
                     var result = await BluetoothEnable.enableBluetooth;
-                    bool? isOn = await bluetoothController
-                        .flutterBluetoothSerial.isEnabled;
+                    bool? isOn = await BluetoothController
+                        .instance.flutterBluetoothSerial.isEnabled;
                     var scanPermission =
                         await Permission.bluetoothScan.request();
                     if (isOn! &&
                         result == "true" &&
                         scanPermission == PermissionStatus.granted) {
-                      bluetoothController.startScanForDevices();
-                      await _showDevicesListModal();
+                      BluetoothController.instance.startScanForDevices();
+                      if (mounted) {
+                        await showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const BluetoothDevicesDialog();
+                          },
+                        );
+                      }
                     } else {
                       await FlutterBluetoothSerial.instance.requestEnable();
                     }
@@ -143,201 +147,6 @@ class _NoDevicesPageState extends ConsumerState<NoDevicesPage> {
           ],
         ),
       ),
-    );
-  }
-
-  // Crie um método que exibe o modal com a lista de dispositivos
-  Future<void> _showDevicesListModal() async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        // Crie o AlertDialog com um ListView.builder que lista os dispositivos
-        return AlertDialog(
-          title: const Text('Dispositivos'),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              width: double.maxFinite,
-              child: StreamBuilder<List<BluetoothDiscoveryResult>>(
-                stream: bluetoothController.results,
-                initialData: const [],
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<BluetoothDiscoveryResult>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      !snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  final devicesList = snapshot.data;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: devicesList!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      BluetoothDevice device = devicesList[index].device;
-                      String? deviceName = "";
-                      if (device.name != null) {
-                        deviceName = device.name!.isNotEmpty
-                            ? device.name
-                            : 'Dispositivo desconhecido';
-                      }
-                      return GestureDetector(
-                        onLongPress: () async {
-                          try {
-                            // Exibe o diálogo de carregamento
-                            showDialog<void>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: Row(
-                                    children: [
-                                      const CircularProgressIndicator(),
-                                      const SizedBox(width: 20),
-                                      Text("Conectando com $deviceName"),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-
-                            bluetoothController
-                                .pairWithBluetoothDevice(device.address)
-                                .whenComplete(() async {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              await openWifiNetworkModal(context);
-                            });
-
-                            // Fecha o diálogo de carregamento e faça algo quando um dispositivo for selecionado
-                          } catch (e) {
-                            print(
-                                'Erro ao conectar ao dispositivo ${device.address}: $e');
-                            // Fecha o diálogo de carregamento e exibe uma mensagem de erro
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            showDialog<void>(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Erro'),
-                                  content: Text(
-                                      'Não foi possível conectar ao dispositivo ${device.address}. Tente novamente.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        },
-                        child: ListTile(
-                          leading: const Icon(Icons.bluetooth),
-                          title: Text(
-                            deviceName!,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'MAC: ${devicesList[index].device.address.toString()}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                              Text(
-                                'RSSI: ${devicesList[index].rssi.toString()} dBm',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            // Feche o modal e faça algo quando um dispositivo for selecionado
-                            Navigator.of(context).pop();
-                            // Faça algo com o dispositivo selecionado aqui
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> openWifiNetworkModal(BuildContext context) async {
-    String ssid = '';
-    String password = '';
-
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Rede WiFi'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                onChanged: (value) => ssid = value,
-                decoration: const InputDecoration(
-                  labelText: 'SSID',
-                ),
-              ),
-              TextField(
-                onChanged: (value) => password = value,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Senha',
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                bluetoothController.sendWifiNetwork(ssid, password);
-              },
-              child: const Text('Confirmar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  alertBluetoothIsNotOn() {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Container(
-            alignment: Alignment.center,
-            width: 50,
-            height: 20,
-            child: const Text("Ligue o Bluetooth e a localização!"),
-          ),
-          icon: const Icon(Icons.bluetooth_disabled_outlined, size: 40),
-        );
-      },
     );
   }
 }
