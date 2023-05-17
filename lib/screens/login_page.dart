@@ -43,7 +43,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         ref.invalidate(deviceProvider);
         ref.invalidate(logProvider);
         ref.invalidate(userProvider);
-        Navigator.pushNamed(context, '/home_page');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home_page',
+          (route) => true,
+        );
       } else {
         showCustomSnackbar(
             context: context, text: "E-mail ou senha incorretos");
