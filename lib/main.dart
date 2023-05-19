@@ -19,6 +19,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  
+  await FirebaseMessaging.instance.getInitialMessage();
+  
   initializeDateFormatting('pt_BR', null);
   runApp(
     const ProviderScope(
