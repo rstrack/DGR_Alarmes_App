@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:DGR_alarmes/services/firebase_messaging_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -28,6 +29,7 @@ class DeviceNotifier extends ChangeNotifier {
     if (userDevices.isNotEmpty) {
       await setMacAddress(userDevices[0].idDevice);
       listenDevice();
+      FirebaseMessagingService.instance.fcmTopicsConfig(userDevices);
     }
   }
 
