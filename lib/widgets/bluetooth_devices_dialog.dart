@@ -22,11 +22,13 @@ class BluetoothDevicesDialog extends StatelessWidget {
                   !snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-
               final devicesList = snapshot.data;
+              if (devicesList!.isEmpty) {
+                return const Text("Nenhum dispositivo encontrado.");
+              }
               return ListView.builder(
                 shrinkWrap: true,
-                itemCount: devicesList!.length,
+                itemCount: devicesList.length,
                 itemBuilder: (BuildContext context, int index) {
                   BluetoothDevice device = devicesList[index].device;
                   String? deviceName = "";
@@ -35,8 +37,8 @@ class BluetoothDevicesDialog extends StatelessWidget {
                         ? device.name
                         : 'Dispositivo desconhecido';
                   }
-                  return GestureDetector(
-                    onLongPress: () async {
+                  return InkWell(
+                    onTap: () async {
                       try {
                         // Exibe o diálogo de carregamento
                         showDialog<void>(
@@ -54,7 +56,6 @@ class BluetoothDevicesDialog extends StatelessWidget {
                             );
                           },
                         );
-
                         BluetoothController.instance
                             .pairWithBluetoothDevice(device.address)
                             .whenComplete(() async {
@@ -67,10 +68,7 @@ class BluetoothDevicesDialog extends StatelessWidget {
                             },
                           );
                         });
-
-                        // Fecha o diálogo de carregamento e faça algo quando um dispositivo for selecionado
                       } catch (e) {
-                        // Fecha o diálogo de carregamento e exibe uma mensagem de erro
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                         showDialog<void>(
@@ -119,11 +117,6 @@ class BluetoothDevicesDialog extends StatelessWidget {
                           ),
                         ],
                       ),
-                      onTap: () {
-                        // Feche o modal e faça algo quando um dispositivo for selecionado
-                        Navigator.of(context).pop();
-                        // Faça algo com o dispositivo selecionado aqui
-                      },
                     ),
                   );
                 },
