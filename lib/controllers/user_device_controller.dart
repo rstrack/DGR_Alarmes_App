@@ -41,20 +41,23 @@ class UserDeviceController {
   }
 
   Future<List<UserDevice>> listUserDevices() async {
-    DatabaseEvent event = await _ref
-        .child('userdevice')
-        .orderByChild("user")
-        .equalTo(_auth.currentUser!.uid)
-        .once();
+    if (_auth.currentUser != null) {
+      DatabaseEvent event = await _ref
+          .child('userdevice')
+          .orderByChild("user")
+          .equalTo(_auth.currentUser!.uid)
+          .once();
 
-    final data = event.snapshot.value;
-    userDevices = [];
-    if (data != null) {
-      (data as Map).forEach((key, value) {
-        userDevices.add(UserDevice.fromJson(key, value));
-      });
+      final data = event.snapshot.value;
+      userDevices = [];
+      if (data != null) {
+        (data as Map).forEach((key, value) {
+          userDevices.add(UserDevice.fromJson(key, value));
+        });
+      }
+      return userDevices;
     }
-    return userDevices;
+    return [];
   }
 
   static UserDeviceController instance = UserDeviceController();

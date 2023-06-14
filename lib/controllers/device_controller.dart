@@ -17,41 +17,39 @@ class DeviceController {
 
   Future<bool> changeDeviceState(Device device) async {
     double unixTime = DateTime.now().millisecondsSinceEpoch / 1000;
-
+    // print('unix time: $unixTime');
     await _ref.child('device/${device.macAddress}/active').set(!device.active);
-
     Completer<bool> completer = Completer<bool>();
 
-    var stream =
-        _ref.child('log/${device.macAddress}').onChildAdded.listen((event) {
-      if (event.snapshot.value != null) {
-        if (completer.isCompleted == false &&
-            (event.snapshot.value as Map)['time'] > unixTime) {
-          completer.complete(true);
-        }
-      }
+    Timer timeoutTimer = Timer(const Duration(seconds: 5), () {
+      _ref.child('device/${device.macAddress}/active').set(device.active);
+      completer.complete(false);
     });
-    // verificar se foi adicionado um log para a alteração de estado. Se der timeout,
-    // o alarme nao respondeu, então reseta a mudança de estado.
-    Timer(const Duration(seconds: 5), () async {
-      if (completer.isCompleted == false) {
-        await stream.cancel();
-        _ref.child('device/${device.macAddress}/active').set(device.active);
-        completer.complete(false);
+
+    Timer checkTimer =
+        Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+      DatabaseEvent event = await _ref.child('log/${device.macAddress}').once();
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> logs =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        bool logFound = false;
+
+        logs.forEach((key, value) {
+          if (!logFound &&
+              value['time'] > unixTime - 1 &&
+              !completer.isCompleted) {
+            logFound = true;
+            completer.complete(true);
+          }
+        });
       }
     });
 
     bool logAdded = await completer.future;
 
-    if (logAdded) {
-      await stream.cancel();
-      return true;
-    }
-    return false;
-  }
-
-  Future<void> disableBuzzer(Device device) async {
-    await _ref.child('device/${device.macAddress}/triggered').set(false);
+    timeoutTimer.cancel();
+    checkTimer.cancel();
+    return logAdded;
   }
 
   static DeviceController instance = DeviceController();

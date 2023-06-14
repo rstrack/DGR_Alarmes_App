@@ -63,19 +63,6 @@ class DeviceNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  changeDeviceState() async {
-    await DeviceController.instance.changeDeviceState(device!);
-    notifyListeners();
-  }
-
-  disableBuzzer() async {
-    isLoading = true;
-    notifyListeners();
-    await DeviceController.instance.disableBuzzer(device!);
-    isLoading = false;
-    notifyListeners();
-  }
-
   setListening(bool isListening) {
     _isListening = isListening;
   }

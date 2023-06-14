@@ -7,7 +7,7 @@ class FirebaseMessagingService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const android = AndroidInitializationSettings('@mipmap/notif_icon');
     const initializationSettings = InitializationSettings(android: android);
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,

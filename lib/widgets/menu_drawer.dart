@@ -99,9 +99,6 @@ class MenuDrawer extends ConsumerWidget {
             child: Column(
               children: <Widget>[
                 const Divider(),
-                const ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text('Configurações')),
                 ListTile(
                     leading: const Icon(Icons.logout_outlined),
                     title: const Text('Sair'),

@@ -52,9 +52,9 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                             '/events_page',
                           );
                         },
-                        child: Row(
+                        child: const Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
+                          children: [
                             Text('Ver histórico completo'),
                             SizedBox(
                               width: 5,
