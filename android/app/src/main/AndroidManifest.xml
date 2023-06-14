@@ -32,9 +32,11 @@
             android:value="2" 
         />
         <meta-data
-          android:name="com.google.firebase.messaging.default_notification_icon"
-          android:resource="@mipmap/ic_launcher"
-        />
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/notif_icon" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/indigo" />
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <!-- Needed only if your app looks for Bluetooth devices. If your app doesn't use Bluetooth scan results to derive physical location information, you can strongly assert that your app doesn't derive physical location. -->
