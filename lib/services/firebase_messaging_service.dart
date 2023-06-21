@@ -1,5 +1,6 @@
 import 'package:DGR_alarmes/models/user_device.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseMessagingService {
@@ -7,12 +8,6 @@ class FirebaseMessagingService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
-    const android = AndroidInitializationSettings('@mipmap/notif_icon');
-    const initializationSettings = InitializationSettings(android: android);
-    flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-    );
-
     await FirebaseMessaging.instance.requestPermission(
       alert: true,
       announcement: false,
@@ -48,14 +43,13 @@ class FirebaseMessagingService {
         htmlFormatContent: true,
       );
       AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails(
-        'dgr',
-        'dgr',
-        importance: Importance.high,
-        styleInformation: bigTextStyleInformation,
-        priority: Priority.high,
-        playSound: true,
-      );
+          AndroidNotificationDetails('dgr', 'dgr',
+              importance: Importance.high,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.high,
+              playSound: true,
+              color: Colors.indigo,
+              icon: '@mipmap/notif_icon');
       NotificationDetails platformChannelSpecifics =
           NotificationDetails(android: androidNotificationDetails);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
