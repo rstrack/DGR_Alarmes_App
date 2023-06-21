@@ -18,7 +18,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     final device = ref.watch(deviceProvider);
-    final log = ref.watch(logProvider(10));
+    var log = ref.watch(logProvider(10));
     // print(device.macAddress);
     return Scaffold(
       body: device.device != null
@@ -70,58 +70,66 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                   ),
                 ),
                 Container(color: Colors.grey[300], height: 2),
-                log.when(
-                  data: (data) => Expanded(
-                      child: ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      if (data.isNotEmpty) {
-                        final item = data[index];
-                        final typeText = item.type == 0
-                            ? "Alarme ativado"
-                            : item.type == 1
-                                ? "Alarme desativado"
-                                : "Alarme disparado";
-                        final icon = item.type == 0
-                            ? const Icon(
-                                Icons.power_settings_new,
-                                color: Colors.green,
-                              )
-                            : item.type == 1
-                                ? const Icon(
-                                    Icons.power_settings_new,
-                                    color: Colors.blueGrey,
-                                  )
-                                : const Icon(
-                                    Icons.notification_important,
-                                    color: Colors.red,
-                                  );
-                        final time = DateTime.fromMillisecondsSinceEpoch(
-                            item.time * 1000);
-                        final formattedTime =
-                            DateFormat('dd/MM/yyyy HH:mm').format(time);
-                        return Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(color: Colors.grey[300]!),
-                              bottom: BorderSide(color: Colors.grey[300]!),
-                            ),
-                          ),
-                          child: ListTile(
-                            leading: icon,
-                            title: Text(typeText),
-                            subtitle: Text(formattedTime),
-                          ),
-                        );
-                      }
-                      return null;
-                    },
-                  )),
-                  error: (error, stackTrace) => const Text(""),
-                  loading: () => const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: CircularProgressIndicator(),
-                  ),
+                Expanded(
+                  child: RefreshIndicator(
+                      onRefresh: () async {
+                        log = await ref.refresh(logProvider(30));
+                      },
+                      child: log.when(
+                        data: (data) => ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          // shrinkWrap: true,
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            if (data.isNotEmpty) {
+                              final item = data[index];
+                              final typeText = item.type == 0
+                                  ? "Alarme ativado"
+                                  : item.type == 1
+                                      ? "Alarme desativado"
+                                      : "Alarme disparado";
+                              final icon = item.type == 0
+                                  ? const Icon(
+                                      Icons.power_settings_new,
+                                      color: Colors.green,
+                                    )
+                                  : item.type == 1
+                                      ? const Icon(
+                                          Icons.power_settings_new,
+                                          color: Colors.blueGrey,
+                                        )
+                                      : const Icon(
+                                          Icons.notification_important,
+                                          color: Colors.red,
+                                        );
+                              final time = DateTime.fromMillisecondsSinceEpoch(
+                                  item.time * 1000);
+                              final formattedTime =
+                                  DateFormat('dd/MM/yyyy HH:mm').format(time);
+                              return Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(color: Colors.grey[300]!),
+                                    bottom:
+                                        BorderSide(color: Colors.grey[300]!),
+                                  ),
+                                ),
+                                child: ListTile(
+                                  leading: icon,
+                                  title: Text(typeText),
+                                  subtitle: Text(formattedTime),
+                                ),
+                              );
+                            }
+                            return null;
+                          },
+                        ),
+                        error: (error, stackTrace) => const Text(""),
+                        loading: () => const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )),
                 ),
               ],
             )
