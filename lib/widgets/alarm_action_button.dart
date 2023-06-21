@@ -28,22 +28,18 @@ class _AlarmActionButtonState extends ConsumerState<AlarmActionButton> {
       setState(() {
         _isLoading = true;
       });
-      ref.read(deviceProvider.notifier).setListening(false);
-      bool response = await DeviceController.instance
-          .changeDeviceState(deviceNotifier.device!);
-      ref.read(deviceProvider.notifier).setListening(true);
-      if (response == true) {
-        deviceNotifier.cancelListen();
-        deviceNotifier = ref.refresh(deviceProvider);
-      }
+      double unixTime = DateTime.now().millisecondsSinceEpoch / 1000;
+      await DeviceController.instance.changeDeviceState(deviceNotifier.device!);
       setState(() {
         _isLoading = false;
       });
-      if (!response && mounted) {
+      bool logAdded =
+          await DeviceController.instance.checkDeviceChange(unixTime);
+      if (!logAdded && mounted) {
         showCustomSnackbar(
             context: context,
             text:
-                "Não foi possível conectar-se ao alarme. Verifique se ele está ligado");
+                "Não foi encontrado o registro da última atualização do alarme. Verifique se o dispositivo está ligado ou se a conexão com a internet está funcionando.");
       }
     }
 

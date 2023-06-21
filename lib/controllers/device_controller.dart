@@ -15,14 +15,13 @@ class DeviceController {
     return device;
   }
 
-  Future<bool> changeDeviceState(Device device) async {
-    double unixTime = DateTime.now().millisecondsSinceEpoch / 1000;
-    // print('unix time: $unixTime');
+  Future<void> changeDeviceState(Device device) async {
     await _ref.child('device/${device.macAddress}/active').set(!device.active);
-    Completer<bool> completer = Completer<bool>();
+  }
 
+  Future<bool> checkDeviceChange(double unixTime) async {
+    Completer<bool> completer = Completer<bool>();
     Timer timeoutTimer = Timer(const Duration(seconds: 5), () {
-      _ref.child('device/${device.macAddress}/active').set(device.active);
       completer.complete(false);
     });
 
